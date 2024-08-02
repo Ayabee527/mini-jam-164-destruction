@@ -1,3 +1,59 @@
-[gd_scene format=3 uid="uid://b6ahsribm845m"]
+[gd_scene load_steps=7 format=3 uid="uid://b6ahsribm845m"]
+
+[ext_resource type="PackedScene" uid="uid://odt57hhqfyyb" path="res://player/player.tscn" id="1_y8kpo"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w4qp0"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_16ak2"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_hocv1"]
+normal = Vector2(-1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_e48l0"]
+normal = Vector2(0, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_6xlnr"]
 
 [node name="Main" type="Node2D"]
+
+[node name="BG" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(256, 256)
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_w4qp0")
+
+[node name="Walls" type="Node2D" parent="."]
+
+[node name="WallLeft" type="StaticBody2D" parent="Walls"]
+position = Vector2(3, 128)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallLeft"]
+shape = SubResource("WorldBoundaryShape2D_16ak2")
+
+[node name="WallRight" type="StaticBody2D" parent="Walls"]
+position = Vector2(253, 128)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallRight"]
+shape = SubResource("WorldBoundaryShape2D_hocv1")
+
+[node name="WallUp" type="StaticBody2D" parent="Walls"]
+position = Vector2(128, 3)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallUp"]
+shape = SubResource("WorldBoundaryShape2D_e48l0")
+
+[node name="WallDown" type="StaticBody2D" parent="Walls"]
+position = Vector2(128, 253)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallDown"]
+shape = SubResource("WorldBoundaryShape2D_6xlnr")
+
+[node name="Player" parent="." instance=ExtResource("1_y8kpo")]
+position = Vector2(128, 128)
