@@ -1,62 +1,85 @@
-[gd_scene load_steps=15 format=3 uid="uid://odt57hhqfyyb"]
+[gd_scene load_steps=20 format=3 uid="uid://odt57hhqfyyb"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_g22xv"]
 [ext_resource type="Script" path="res://components/states/state_machine.gd" id="2_1eeh8"]
 [ext_resource type="Script" path="res://components/health/health.gd" id="2_umumv"]
-[ext_resource type="Script" path="res://player/states/fly.gd" id="3_so6ai"]
+[ext_resource type="Script" path="res://player/states/move.gd" id="3_so6ai"]
 [ext_resource type="Script" path="res://player/states/idle.gd" id="3_ys8cc"]
 [ext_resource type="Texture2D" uid="uid://cxxwdlrgkagra" path="res://assets/textures/player.png" id="4_weppg"]
 [ext_resource type="Script" path="res://player/states/dash.gd" id="5_47ucy"]
+[ext_resource type="PackedScene" uid="uid://ouku35n2g1oe" path="res://components/shadow/shadow.tscn" id="7_p3ssd"]
+[ext_resource type="Texture2D" uid="uid://dxgroo4ufn7ac" path="res://assets/textures/circle.png" id="8_2woic"]
 [ext_resource type="PackedScene" uid="uid://dvvktbgt1ayca" path="res://components/hurtbox/hurtbox.tscn" id="8_jofnb"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uth7a"]
 bounce = 0.9
 
-[sub_resource type="Animation" id="Animation_kmwgs"]
-resource_name = "flap"
-length = 0.2
-loop_mode = 1
+[sub_resource type="Curve" id="Curve_3fh48"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_1hkmo"]
+curve = SubResource("Curve_3fh48")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_x2cya"]
+particle_flag_disable_z = true
+direction = Vector3(-1, 0, 0)
+spread = 5.0
+initial_velocity_min = 16.0
+initial_velocity_max = 64.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.05
+scale_max = 0.2
+scale_curve = SubResource("CurveTexture_1hkmo")
+color = Color(0.592734, 0.419391, 1.92523e-07, 1)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_d1b6m"]
+radius = 6.0
+height = 18.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_aankp"]
+radius = 5.0
+height = 16.0
+
+[sub_resource type="Animation" id="Animation_pbbrw"]
+resource_name = "jump"
+length = 0.5
+step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
-tracks/0/interp = 1
+tracks/0/path = NodePath("Sprite2D:offset")
+tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [0, 1]
+"times": PackedFloat32Array(0, 0.1, 0.35, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -8), Vector2(0, -8), Vector2(0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_x1mr5"]
+[sub_resource type="Animation" id="Animation_vmdew"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath(".:frame")
+tracks/0/path = NodePath("Sprite2D:offset")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
+"update": 0,
+"values": [Vector2(0, 0)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_fotp1"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6xtm4"]
 _data = {
-"RESET": SubResource("Animation_x1mr5"),
-"flap": SubResource("Animation_kmwgs")
+"RESET": SubResource("Animation_vmdew"),
+"jump": SubResource("Animation_pbbrw")
 }
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_xuwl3"]
-radius = 4.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_43nnt"]
-radius = 7.07107
-
-[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("sprite")]
+[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2")]
 collision_layer = 6
 physics_material_override = SubResource("PhysicsMaterial_uth7a")
 gravity_scale = 0.0
@@ -66,6 +89,9 @@ linear_damp = 2.5
 angular_damp = 2.5
 script = ExtResource("1_g22xv")
 sprite = NodePath("Sprite2D")
+shadow = NodePath("Shadow")
+dirt_trail_1 = NodePath("Rear1/DirtTrail")
+dirt_trail_2 = NodePath("Rear2/DirtTrail2")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("2_umumv")
@@ -77,7 +103,7 @@ initial_state = NodePath("Idle")
 [node name="Idle" type="Node" parent="StateMachine"]
 script = ExtResource("3_ys8cc")
 
-[node name="Fly" type="Node" parent="StateMachine"]
+[node name="Move" type="Node" parent="StateMachine"]
 script = ExtResource("3_so6ai")
 
 [node name="Dash" type="Node" parent="StateMachine" node_paths=PackedStringArray("dash_timer")]
@@ -88,18 +114,37 @@ dash_timer = NodePath("DashTimer")
 wait_time = 0.5
 one_shot = true
 
+[node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("7_p3ssd")]
+caster = NodePath("../Sprite2D")
+
+[node name="Rear1" type="Marker2D" parent="."]
+position = Vector2(-4, -5)
+
+[node name="DirtTrail" type="GPUParticles2D" parent="Rear1"]
+emitting = false
+amount = 75
+process_material = SubResource("ParticleProcessMaterial_x2cya")
+texture = ExtResource("8_2woic")
+lifetime = 2.0
+randomness = 1.0
+
+[node name="Rear2" type="Marker2D" parent="."]
+position = Vector2(-4, 5)
+
+[node name="DirtTrail2" type="GPUParticles2D" parent="Rear2"]
+emitting = false
+amount = 75
+process_material = SubResource("ParticleProcessMaterial_x2cya")
+texture = ExtResource("8_2woic")
+lifetime = 2.0
+randomness = 1.0
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("4_weppg")
-hframes = 2
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite2D"]
-libraries = {
-"": SubResource("AnimationLibrary_fotp1")
-}
-autoplay = "flap"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_xuwl3")
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_d1b6m")
 
 [node name="Hurtbox" parent="." node_paths=PackedStringArray("health") instance=ExtResource("8_jofnb")]
 collision_layer = 4
@@ -107,7 +152,13 @@ collision_mask = 96
 health = NodePath("../Health")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-shape = SubResource("CircleShape2D_43nnt")
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_aankp")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_6xtm4")
+}
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="StateMachine/Dash/DashTimer" to="StateMachine/Dash" method="_on_dash_timer_timeout"]

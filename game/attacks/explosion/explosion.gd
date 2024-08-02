@@ -73,7 +73,7 @@ func explode() -> void:
 	if boomed:
 		return
 	
-	MainCam.shake(20, 10, 5)
+	MainCam.shake(50, 10, 5)
 	boomed = true
 	explode_timer.stop()
 	coll_shape.set_deferred("disabled", false)
