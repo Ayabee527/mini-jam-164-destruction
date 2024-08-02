@@ -101,12 +101,14 @@ autoplay = "flap"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_xuwl3")
 
-[node name="Hurtbox" parent="." instance=ExtResource("8_jofnb")]
+[node name="Hurtbox" parent="." node_paths=PackedStringArray("health") instance=ExtResource("8_jofnb")]
 collision_layer = 4
 collision_mask = 96
+health = NodePath("../Health")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 shape = SubResource("CircleShape2D_43nnt")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="StateMachine/Dash/DashTimer" to="StateMachine/Dash" method="_on_dash_timer_timeout"]
+[connection signal="knocked_back" from="Hurtbox" to="." method="_on_hurtbox_knocked_back"]

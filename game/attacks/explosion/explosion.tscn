@@ -1,0 +1,99 @@
+[gd_scene load_steps=10 format=3 uid="uid://duubih8cq0i7o"]
+
+[ext_resource type="Script" path="res://attacks/explosion/explosion.gd" id="1_mibby"]
+[ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="2_os6kv"]
+[ext_resource type="Texture2D" uid="uid://dxgroo4ufn7ac" path="res://assets/textures/circle.png" id="3_gfn64"]
+
+[sub_resource type="Curve" id="Curve_q0juo"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ppbwf"]
+curve = SubResource("Curve_q0juo")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fpq4l"]
+particle_flag_align_y = true
+particle_flag_disable_z = true
+angle_min = 1.07288e-05
+angle_max = 360.0
+spread = 180.0
+initial_velocity_min = 32.0
+initial_velocity_max = 128.0
+angular_velocity_min = -720.0
+angular_velocity_max = 720.0
+gravity = Vector3(0, 98, 0)
+scale_min = 0.5
+scale_max = 5.0
+scale_curve = SubResource("CurveTexture_ppbwf")
+
+[sub_resource type="Curve" id="Curve_b4yes"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_n14s0"]
+curve = SubResource("Curve_b4yes")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0ijio"]
+particle_flag_disable_z = true
+angle_min = 1.07288e-05
+angle_max = 360.0
+spread = 180.0
+initial_velocity_max = 64.0
+angular_velocity_min = -720.0
+angular_velocity_max = 720.0
+gravity = Vector3(0, -98, 0)
+scale_min = 0.1
+scale_max = 0.5
+scale_curve = SubResource("CurveTexture_n14s0")
+color = Color(0.501961, 0.501961, 0.501961, 1)
+
+[node name="Explosion" type="Node2D" node_paths=PackedStringArray("preview", "progress", "shape", "explode_timer", "hitbox", "coll_shape", "debri", "smoke")]
+script = ExtResource("1_mibby")
+preview = NodePath("Preview")
+progress = NodePath("Progress")
+shape = NodePath("Shape")
+explode_timer = NodePath("ExplodeTimer")
+hitbox = NodePath("Hitbox")
+coll_shape = NodePath("Hitbox/CollisionShape2D")
+debri = NodePath("Debri")
+smoke = NodePath("Smoke")
+
+[node name="Preview" type="Polygon2D" parent="."]
+modulate = Color(1, 1, 1, 0.25098)
+
+[node name="Progress" type="Polygon2D" parent="."]
+modulate = Color(1, 1, 1, 0.25098)
+
+[node name="Debri" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 25
+process_material = SubResource("ParticleProcessMaterial_fpq4l")
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+
+[node name="Smoke" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 25
+process_material = SubResource("ParticleProcessMaterial_0ijio")
+texture = ExtResource("3_gfn64")
+lifetime = 3.0
+one_shot = true
+explosiveness = 1.0
+randomness = 1.0
+
+[node name="Shape" type="Polygon2D" parent="."]
+
+[node name="ExplodeTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="Hitbox" parent="." instance=ExtResource("2_os6kv")]
+collision_layer = 64
+collision_mask = 12
+knockback_strength = 512.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+disabled = true
+
+[connection signal="timeout" from="ExplodeTimer" to="." method="_on_explode_timer_timeout"]

@@ -1,6 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://b6ahsribm845m"]
+[gd_scene load_steps=9 format=3 uid="uid://b6ahsribm845m"]
 
+[ext_resource type="Script" path="res://main/main.gd" id="1_pvali"]
 [ext_resource type="PackedScene" uid="uid://odt57hhqfyyb" path="res://player/player.tscn" id="1_y8kpo"]
+[ext_resource type="PackedScene" uid="uid://dbnssgxxh071g" path="res://attacks/dynamite/dynamite.tscn" id="2_831yv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w4qp0"]
 bg_color = Color(0, 0, 0, 1)
@@ -22,6 +24,7 @@ normal = Vector2(0, 1)
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_6xlnr"]
 
 [node name="Main" type="Node2D"]
+script = ExtResource("1_pvali")
 
 [node name="BG" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(256, 256)
@@ -57,3 +60,19 @@ shape = SubResource("WorldBoundaryShape2D_6xlnr")
 
 [node name="Player" parent="." instance=ExtResource("1_y8kpo")]
 position = Vector2(128, 128)
+
+[node name="Dynamite" parent="." instance=ExtResource("2_831yv")]
+position = Vector2(304, 112)
+rotation = -2.43473
+
+[node name="Dynamite2" parent="." instance=ExtResource("2_831yv")]
+position = Vector2(-40, 24)
+fuse_time = 5.0
+radius = 128.0
+
+[node name="Dynamite3" parent="." instance=ExtResource("2_831yv")]
+position = Vector2(132, 296)
+rotation = -1.5708
+speed = 512.0
+fuse_time = 3.0
+radius = 96.0

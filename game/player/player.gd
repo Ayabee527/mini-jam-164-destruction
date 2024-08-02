@@ -36,3 +36,9 @@ func get_move_vector() -> Vector2:
 
 func _on_body_entered(body: Node) -> void:
 	pass
+
+
+func _on_hurtbox_knocked_back(knockback: Vector2) -> void:
+	apply_central_impulse(
+		knockback
+	)
