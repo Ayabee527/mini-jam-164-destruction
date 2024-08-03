@@ -17,17 +17,12 @@ extends RigidBody2D
 @export var rear_2: Marker2D
 @export var hard_hitbox_collision: CollisionShape2D
 @export var soft_hitbox_collision: CollisionShape2D
+@export var hurt_player: AnimationPlayer
 
 var squish_time: float = 0.0
 
 func _ready() -> void:
 	MainCam.target = self
-	
-	var tween = create_tween().set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUINT)
-	tween.tween_property(
-		sprite, "height",
-		0.0, 2.0
-	).from(256.0)
 
 func _process(delta: float) -> void:
 	squish_time += delta
@@ -57,3 +52,8 @@ func _on_hurtbox_knocked_back(knockback: Vector2) -> void:
 	apply_central_impulse(
 		knockback
 	)
+
+
+func _on_health_was_hurt(new_health: int, amount: int) -> void:
+	MainCam.shake(5 * amount, 10, 5)
+	hurt_player.play("hurt")

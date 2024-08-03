@@ -1,0 +1,272 @@
+[gd_scene load_steps=28 format=3 uid="uid://bkqsn5lwyrsop"]
+
+[ext_resource type="Script" path="res://enemies/car/enemy_car.gd" id="1_fpeiw"]
+[ext_resource type="Script" path="res://components/health/health.gd" id="1_lgj22"]
+[ext_resource type="Texture2D" uid="uid://dxgroo4ufn7ac" path="res://assets/textures/circle.png" id="2_8tnti"]
+[ext_resource type="Script" path="res://components/states/state_machine.gd" id="3_7hb5b"]
+[ext_resource type="PackedScene" uid="uid://bw8338ilrtcwc" path="res://components/trail/trail.tscn" id="3_ius2y"]
+[ext_resource type="Script" path="res://enemies/car/states/hunt.gd" id="4_g4psh"]
+[ext_resource type="PackedScene" uid="uid://ouku35n2g1oe" path="res://components/shadow/shadow.tscn" id="4_iptr5"]
+[ext_resource type="Script" path="res://enemies/car/states/chase.gd" id="5_5ud6p"]
+[ext_resource type="Script" path="res://enemies/car/states/dash.gd" id="6_farhp"]
+[ext_resource type="PackedScene" uid="uid://bbg3rfqwxe0mh" path="res://components/height_sprite/height_sprite.tscn" id="6_lmius"]
+[ext_resource type="Texture2D" uid="uid://dc7h6somg0kbo" path="res://assets/textures/enemy_car.png" id="7_nlruf"]
+[ext_resource type="PackedScene" uid="uid://dvvktbgt1ayca" path="res://components/hurtbox/hurtbox.tscn" id="8_4la8y"]
+[ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="9_eh00a"]
+[ext_resource type="Shader" path="res://enemies/flash.gdshader" id="12_5mjfr"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_d2opd"]
+bounce = 1.0
+
+[sub_resource type="Curve" id="Curve_esg0n"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_1hkmo"]
+curve = SubResource("Curve_esg0n")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hx72l"]
+particle_flag_disable_z = true
+direction = Vector3(-1, 0, 0)
+spread = 5.0
+initial_velocity_min = 16.0
+initial_velocity_max = 64.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.05
+scale_max = 0.2
+scale_curve = SubResource("CurveTexture_1hkmo")
+color = Color(0.592734, 0.419391, 1.92523e-07, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d3lt3"]
+resource_local_to_scene = true
+shader = ExtResource("12_5mjfr")
+shader_parameter/active = false
+shader_parameter/tint = Color(1, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_g1b52"]
+resource_name = "hurt"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material:shader_parameter/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_uhnof"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material:shader_parameter/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_kpmgu"]
+_data = {
+"RESET": SubResource("Animation_uhnof"),
+"hurt": SubResource("Animation_g1b52")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vwiw8"]
+radius = 6.0
+height = 18.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nbtxi"]
+radius = 6.0
+height = 18.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eq223"]
+size = Vector2(8, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6df35"]
+size = Vector2(5, 10)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_alt04"]
+radius = 128.0
+
+[node name="EnemyCar" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision", "hurt_player")]
+collision_layer = 10
+collision_mask = 3
+physics_material_override = SubResource("PhysicsMaterial_d2opd")
+gravity_scale = 0.0
+contact_monitor = true
+max_contacts_reported = 4
+linear_damp = 2.5
+angular_damp = 2.5
+script = ExtResource("1_fpeiw")
+sprite = NodePath("HeightSprite")
+shadow = NodePath("Shadow")
+dirt_trail_1 = NodePath("Rear1/DirtTrail")
+dirt_trail_2 = NodePath("Rear2/DirtTrail2")
+rear_1 = NodePath("Rear1")
+rear_2 = NodePath("Rear2")
+hard_hitbox_collision = NodePath("HardHitbox/CollisionShape2D")
+soft_hitbox_collision = NodePath("SoftHitbox/CollisionShape2D")
+hurt_player = NodePath("HeightSprite/AnimationPlayer")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("1_lgj22")
+max_health = 100
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("3_7hb5b")
+initial_state = NodePath("Hunt")
+
+[node name="Hunt" type="Node" parent="StateMachine" node_paths=PackedStringArray("turn_timer", "reverse_timer", "wall_sensors")]
+script = ExtResource("4_g4psh")
+min_turn_cooldown = 1.0
+max_turn_cooldown = 2.0
+turn_timer = NodePath("TurnTimer")
+reverse_timer = NodePath("ReverseTimer")
+wall_sensors = NodePath("../../Raycasts")
+
+[node name="TurnTimer" type="Timer" parent="StateMachine/Hunt"]
+one_shot = true
+
+[node name="ReverseTimer" type="Timer" parent="StateMachine/Hunt"]
+one_shot = true
+
+[node name="Chase" type="Node" parent="StateMachine" node_paths=PackedStringArray("give_up_timer", "reverse_timer", "wall_sensors")]
+script = ExtResource("5_5ud6p")
+give_up_timer = NodePath("GiveUpTimer")
+reverse_timer = NodePath("../Hunt/ReverseTimer")
+wall_sensors = NodePath("../../Raycasts")
+
+[node name="GiveUpTimer" type="Timer" parent="StateMachine/Chase"]
+wait_time = 5.0
+one_shot = true
+
+[node name="Dash" type="Node" parent="StateMachine"]
+script = ExtResource("6_farhp")
+
+[node name="Rear1" type="Marker2D" parent="."]
+position = Vector2(-4, -5)
+
+[node name="DirtTrail" type="GPUParticles2D" parent="Rear1"]
+amount = 75
+process_material = SubResource("ParticleProcessMaterial_hx72l")
+texture = ExtResource("2_8tnti")
+lifetime = 2.0
+randomness = 1.0
+
+[node name="Trail" parent="Rear1" instance=ExtResource("3_ius2y")]
+modulate = Color(0.592734, 0.419391, 1.92523e-07, 1)
+z_index = -1
+z_as_relative = false
+length = 256
+
+[node name="Rear2" type="Marker2D" parent="."]
+position = Vector2(-4, 5)
+
+[node name="DirtTrail2" type="GPUParticles2D" parent="Rear2"]
+amount = 75
+process_material = SubResource("ParticleProcessMaterial_hx72l")
+texture = ExtResource("2_8tnti")
+lifetime = 2.0
+randomness = 1.0
+
+[node name="Trail" parent="Rear2" instance=ExtResource("3_ius2y")]
+modulate = Color(0.592734, 0.419391, 1.92523e-07, 1)
+z_index = -1
+z_as_relative = false
+length = 256
+
+[node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("4_iptr5")]
+texture = ExtResource("7_nlruf")
+offset = Vector2(-2, 2)
+hframes = 6
+caster = NodePath("../HeightSprite")
+
+[node name="HeightSprite" parent="." instance=ExtResource("6_lmius")]
+material = SubResource("ShaderMaterial_d3lt3")
+texture = ExtResource("7_nlruf")
+hframes = 6
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="HeightSprite"]
+libraries = {
+"": SubResource("AnimationLibrary_kpmgu")
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_vwiw8")
+
+[node name="Hurtbox" parent="." node_paths=PackedStringArray("health") instance=ExtResource("8_4la8y")]
+health = NodePath("../Health")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_nbtxi")
+
+[node name="HardHitbox" parent="." instance=ExtResource("9_eh00a")]
+damage = 10
+knockback_strength = 512.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HardHitbox"]
+position = Vector2(8, 0)
+shape = SubResource("RectangleShape2D_eq223")
+disabled = true
+
+[node name="SoftHitbox" parent="." instance=ExtResource("9_eh00a")]
+invinc_time = 0.1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SoftHitbox"]
+position = Vector2(6.5, 0)
+shape = SubResource("RectangleShape2D_6df35")
+
+[node name="CarFinder" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 12
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CarFinder"]
+position = Vector2(64, 1)
+shape = SubResource("CircleShape2D_alt04")
+
+[node name="Raycasts" type="Node2D" parent="."]
+
+[node name="WallDetect1" type="RayCast2D" parent="Raycasts"]
+rotation = -0.785398
+target_position = Vector2(32, 0)
+
+[node name="WallDetect2" type="RayCast2D" parent="Raycasts"]
+rotation = -0.392699
+target_position = Vector2(48, 0)
+
+[node name="WallDetect3" type="RayCast2D" parent="Raycasts"]
+target_position = Vector2(64, 0)
+
+[node name="WallDetect4" type="RayCast2D" parent="Raycasts"]
+rotation = 0.392699
+target_position = Vector2(48, 0)
+
+[node name="WallDetect5" type="RayCast2D" parent="Raycasts"]
+rotation = 0.785398
+target_position = Vector2(32, 0)
+
+[node name="WallDetect6" type="RayCast2D" parent="Raycasts"]
+rotation = -1.5708
+target_position = Vector2(16, 0)
+
+[node name="WallDetect7" type="RayCast2D" parent="Raycasts"]
+rotation = 1.5708
+target_position = Vector2(16, 0)
+
+[connection signal="was_hurt" from="Health" to="." method="_on_health_was_hurt"]
+[connection signal="timeout" from="StateMachine/Hunt/TurnTimer" to="StateMachine/Hunt" method="_on_turn_timer_timeout"]
+[connection signal="timeout" from="StateMachine/Chase/GiveUpTimer" to="StateMachine/Chase" method="_on_give_up_timer_timeout"]
+[connection signal="body_entered" from="CarFinder" to="StateMachine/Hunt" method="_on_car_finder_body_entered"]
+[connection signal="body_entered" from="CarFinder" to="StateMachine/Chase" method="_on_car_finder_body_entered"]
+[connection signal="body_exited" from="CarFinder" to="StateMachine/Chase" method="_on_car_finder_body_exited"]

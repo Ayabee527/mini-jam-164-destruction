@@ -1,8 +1,16 @@
-[gd_scene load_steps=8 format=3 uid="uid://b6ahsribm845m"]
+[gd_scene load_steps=9 format=3 uid="uid://b6ahsribm845m"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_pvali"]
 [ext_resource type="PackedScene" uid="uid://odt57hhqfyyb" path="res://player/player.tscn" id="1_y8kpo"]
 [ext_resource type="Texture2D" uid="uid://dsh6w54r4e3xr" path="res://assets/textures/square.png" id="2_6gsk7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u4opk"]
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_16ak2"]
 normal = Vector2(1, 0)
@@ -20,38 +28,55 @@ script = ExtResource("1_pvali")
 
 [node name="Ground" type="Sprite2D" parent="."]
 modulate = Color(1, 0.824076, 0.586959, 1)
+z_index = -1
+z_as_relative = false
 scale = Vector2(160, 160)
 texture = ExtResource("2_6gsk7")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(1024, 1024)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -256.0
+offset_top = -256.0
+offset_right = 256.0
+offset_bottom = 256.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_u4opk")
 
 [node name="Walls" type="Node2D" parent="."]
 
 [node name="WallLeft" type="StaticBody2D" parent="Walls"]
-position = Vector2(3, 128)
+position = Vector2(-512, 0)
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallLeft"]
 shape = SubResource("WorldBoundaryShape2D_16ak2")
-disabled = true
 
 [node name="WallRight" type="StaticBody2D" parent="Walls"]
-position = Vector2(253, 128)
+position = Vector2(512, 0)
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallRight"]
 shape = SubResource("WorldBoundaryShape2D_hocv1")
-disabled = true
 
 [node name="WallUp" type="StaticBody2D" parent="Walls"]
-position = Vector2(128, 3)
+position = Vector2(0, -512)
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallUp"]
 shape = SubResource("WorldBoundaryShape2D_e48l0")
-disabled = true
 
 [node name="WallDown" type="StaticBody2D" parent="Walls"]
-position = Vector2(128, 253)
+position = Vector2(0, 512)
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallDown"]
 shape = SubResource("WorldBoundaryShape2D_6xlnr")
-disabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_y8kpo")]
 position = Vector2(128, 128)
