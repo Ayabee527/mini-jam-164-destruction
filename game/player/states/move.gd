@@ -1,8 +1,7 @@
 extends PlayerState
 
 func enter(_msg:={}) -> void:
-	player.dirt_trail_1.emitting = true
-	player.dirt_trail_2.emitting = true
+	pass
 
 func update(delta: float) -> void:
 	player.squish(player.move_squish_freq)
@@ -27,5 +26,4 @@ func physics_update(delta: float) -> void:
 		state_machine.transition_to("Dash")
 
 func exit() -> void:
-	player.dirt_trail_1.emitting = false
-	player.dirt_trail_2.emitting = false
+	pass

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://csytheq2rhkh7"]
+
+[ext_resource type="Script" path="res://components/skid_mark/skid_mark.gd" id="1_m64c7"]
+
+[node name="SkidMark" type="Line2D"]
+width = 2.0
+joint_mode = 2
+begin_cap_mode = 1
+end_cap_mode = 1
+script = ExtResource("1_m64c7")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://odt57hhqfyyb"]
+[gd_scene load_steps=22 format=3 uid="uid://odt57hhqfyyb"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_g22xv"]
 [ext_resource type="Script" path="res://components/states/state_machine.gd" id="2_1eeh8"]
@@ -10,6 +10,9 @@
 [ext_resource type="PackedScene" uid="uid://ouku35n2g1oe" path="res://components/shadow/shadow.tscn" id="7_p3ssd"]
 [ext_resource type="Texture2D" uid="uid://dxgroo4ufn7ac" path="res://assets/textures/circle.png" id="8_2woic"]
 [ext_resource type="PackedScene" uid="uid://dvvktbgt1ayca" path="res://components/hurtbox/hurtbox.tscn" id="8_jofnb"]
+[ext_resource type="PackedScene" uid="uid://bw8338ilrtcwc" path="res://components/trail/trail.tscn" id="8_rx3g0"]
+[ext_resource type="PackedScene" uid="uid://bbg3rfqwxe0mh" path="res://components/height_sprite/height_sprite.tscn" id="10_0ne8n"]
+[ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="12_rrmdg"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uth7a"]
 bounce = 0.9
@@ -38,48 +41,16 @@ radius = 6.0
 height = 18.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_aankp"]
-radius = 5.0
-height = 16.0
+radius = 6.0
+height = 18.0
 
-[sub_resource type="Animation" id="Animation_pbbrw"]
-resource_name = "jump"
-length = 0.5
-step = 0.05
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:offset")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.35, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(0, 0), Vector2(0, -8), Vector2(0, -8), Vector2(0, 0)]
-}
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l8w8m"]
+size = Vector2(8, 16)
 
-[sub_resource type="Animation" id="Animation_vmdew"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:offset")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
-}
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r7br0"]
+size = Vector2(5, 10)
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_6xtm4"]
-_data = {
-"RESET": SubResource("Animation_vmdew"),
-"jump": SubResource("Animation_pbbrw")
-}
-
-[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2")]
+[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision")]
 collision_layer = 6
 physics_material_override = SubResource("PhysicsMaterial_uth7a")
 gravity_scale = 0.0
@@ -88,10 +59,14 @@ max_contacts_reported = 4
 linear_damp = 2.5
 angular_damp = 2.5
 script = ExtResource("1_g22xv")
-sprite = NodePath("Sprite2D")
+sprite = NodePath("HeightSprite")
 shadow = NodePath("Shadow")
 dirt_trail_1 = NodePath("Rear1/DirtTrail")
 dirt_trail_2 = NodePath("Rear2/DirtTrail2")
+rear_1 = NodePath("Rear1")
+rear_2 = NodePath("Rear2")
+hard_hitbox_collision = NodePath("HardHitbox/CollisionShape2D")
+soft_hitbox_collision = NodePath("SoftHitbox/CollisionShape2D")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("2_umumv")
@@ -114,9 +89,6 @@ dash_timer = NodePath("DashTimer")
 wait_time = 0.5
 one_shot = true
 
-[node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("7_p3ssd")]
-caster = NodePath("../Sprite2D")
-
 [node name="Rear1" type="Marker2D" parent="."]
 position = Vector2(-4, -5)
 
@@ -127,6 +99,10 @@ process_material = SubResource("ParticleProcessMaterial_x2cya")
 texture = ExtResource("8_2woic")
 lifetime = 2.0
 randomness = 1.0
+
+[node name="Trail" parent="Rear1" instance=ExtResource("8_rx3g0")]
+modulate = Color(0.592734, 0.419391, 1.92523e-07, 1)
+length = 256
 
 [node name="Rear2" type="Marker2D" parent="."]
 position = Vector2(-4, 5)
@@ -139,7 +115,16 @@ texture = ExtResource("8_2woic")
 lifetime = 2.0
 randomness = 1.0
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Trail" parent="Rear2" instance=ExtResource("8_rx3g0")]
+modulate = Color(0.592734, 0.419391, 1.92523e-07, 1)
+length = 256
+
+[node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("7_p3ssd")]
+texture = ExtResource("4_weppg")
+offset = Vector2(-2, 2)
+caster = NodePath("../HeightSprite")
+
+[node name="HeightSprite" parent="." instance=ExtResource("10_0ne8n")]
 texture = ExtResource("4_weppg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -155,10 +140,25 @@ health = NodePath("../Health")
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_aankp")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_6xtm4")
-}
+[node name="HardHitbox" parent="." instance=ExtResource("12_rrmdg")]
+collision_layer = 16
+collision_mask = 8
+damage = 10
+knockback_strength = 256.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HardHitbox"]
+position = Vector2(8, 0)
+shape = SubResource("RectangleShape2D_l8w8m")
+disabled = true
+
+[node name="SoftHitbox" parent="." instance=ExtResource("12_rrmdg")]
+collision_layer = 16
+collision_mask = 8
+invinc_time = 0.1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SoftHitbox"]
+position = Vector2(6.5, 0)
+shape = SubResource("RectangleShape2D_r7br0")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="timeout" from="StateMachine/Dash/DashTimer" to="StateMachine/Dash" method="_on_dash_timer_timeout"]

@@ -6,11 +6,13 @@ extends PlayerState
 func enter(_msg:={}) -> void:
 	player.apply_central_impulse(
 		Vector2.from_angle(player.global_rotation)
-		* player.move_speed * 0.75
+		* player.move_speed * 0.5
 	)
 	dash_timer.start(cooldown)
 	
-	jump()
+	#jump()
+	
+	player.hard_hitbox_collision.set_deferred("disabled", false)
 
 func update(delta: float) -> void:
 	player.squish(player.dash_squish_freq)
@@ -18,11 +20,17 @@ func update(delta: float) -> void:
 func physics_update(delta: float) -> void:
 	var turn_axis: float = player.get_turn_axis()
 	player.apply_torque(
-		turn_axis * player.turn_speed
+		turn_axis * player.turn_speed * 1.0
+	)
+	
+	var move_axis: float = player.get_move_axis()
+	var move_dir: Vector2 = Vector2.from_angle(player.global_rotation)
+	player.apply_central_force(
+		move_dir * move_axis * player.move_speed * 2.0
 	)
 
 func exit() -> void:
-	pass
+	player.hard_hitbox_collision.set_deferred("disabled", true)
 
 func jump() -> void:
 	var tween = create_tween().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)

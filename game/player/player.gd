@@ -9,15 +9,25 @@ extends RigidBody2D
 @export var dash_squish_freq: float = 32.0
 
 @export_group("Inner Dependencies")
-@export var sprite: Sprite2D
+@export var sprite: HeightSprite
 @export var shadow: Shadow
 @export var dirt_trail_1: GPUParticles2D
 @export var dirt_trail_2: GPUParticles2D
+@export var rear_1: Marker2D
+@export var rear_2: Marker2D
+@export var hard_hitbox_collision: CollisionShape2D
+@export var soft_hitbox_collision: CollisionShape2D
 
 var squish_time: float = 0.0
 
 func _ready() -> void:
 	MainCam.target = self
+	
+	var tween = create_tween().set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUINT)
+	tween.tween_property(
+		sprite, "height",
+		0.0, 2.0
+	).from(256.0)
 
 func _process(delta: float) -> void:
 	squish_time += delta
@@ -31,7 +41,7 @@ func squish(freq: float) -> void:
 		w_squish,
 		h_squish
 	)
-	shadow.scale = sprite.scale
+	shadow.shadow_scale = sprite.scale
 
 func get_move_axis() -> float:
 	return Input.get_axis("move_back", "move_forward")

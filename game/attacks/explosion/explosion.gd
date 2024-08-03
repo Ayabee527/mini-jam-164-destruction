@@ -4,7 +4,7 @@ extends Node2D
 signal exploded()
 
 @export var autostart: bool = true
-@export var color: Color = Color.RED
+@export var color: Color = Color(0.593, 0.419, 0)
 @export var radius: float = 64.0
 @export var fuse_time: float = 1.0
 @export var damage: int = 1
