@@ -21,6 +21,7 @@ signal exploded()
 @export var debri: GPUParticles2D
 @export var smoke: GPUParticles2D
 @export var damage_sprite: Sprite2D
+@export var explode_sound: AudioStreamPlayer2D
 
 var boomed: bool = false
 
@@ -77,6 +78,7 @@ func explode() -> void:
 	if boomed:
 		return
 	
+	explode_sound.play()
 	MainCam.shake(50, 10, 5)
 	boomed = true
 	explode_timer.stop()

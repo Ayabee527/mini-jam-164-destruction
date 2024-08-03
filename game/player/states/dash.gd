@@ -9,6 +9,7 @@ func enter(_msg:={}) -> void:
 		* player.move_speed * 0.5
 	)
 	dash_timer.start(cooldown)
+	player.dash_sound.play()
 	
 	#jump()
 	

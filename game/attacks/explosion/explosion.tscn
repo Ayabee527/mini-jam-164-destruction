@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://duubih8cq0i7o"]
+[gd_scene load_steps=13 format=3 uid="uid://duubih8cq0i7o"]
 
 [ext_resource type="Script" path="res://attacks/explosion/explosion.gd" id="1_mibby"]
 [ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="2_os6kv"]
 [ext_resource type="Texture2D" uid="uid://dxgroo4ufn7ac" path="res://assets/textures/circle.png" id="3_gfn64"]
 [ext_resource type="Texture2D" uid="uid://docih8oatpbky" path="res://assets/textures/esplosions.png" id="4_j7bh2"]
+[ext_resource type="AudioStream" uid="uid://bwkdqx73njojy" path="res://assets/sounds/explose.wav" id="5_p0msr"]
 
 [sub_resource type="Curve" id="Curve_q0juo"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -48,7 +49,12 @@ scale_max = 0.5
 scale_curve = SubResource("CurveTexture_n14s0")
 color = Color(0.501961, 0.501961, 0.501961, 1)
 
-[node name="Explosion" type="Node2D" node_paths=PackedStringArray("preview", "progress", "shape", "explode_timer", "hitbox", "coll_shape", "debri", "smoke", "damage_sprite")]
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_p7ppu"]
+random_pitch = 1.1
+streams_count = 1
+stream_0/stream = ExtResource("5_p0msr")
+
+[node name="Explosion" type="Node2D" node_paths=PackedStringArray("preview", "progress", "shape", "explode_timer", "hitbox", "coll_shape", "debri", "smoke", "damage_sprite", "explode_sound")]
 script = ExtResource("1_mibby")
 preview = NodePath("Preview")
 progress = NodePath("Progress")
@@ -59,6 +65,7 @@ coll_shape = NodePath("Hitbox/CollisionShape2D")
 debri = NodePath("Debri")
 smoke = NodePath("Smoke")
 damage_sprite = NodePath("Damage")
+explode_sound = NodePath("Explose")
 
 [node name="Preview" type="Polygon2D" parent="."]
 modulate = Color(1, 1, 1, 0.25098)
@@ -107,5 +114,11 @@ z_index = -1
 z_as_relative = false
 texture = ExtResource("4_j7bh2")
 hframes = 3
+
+[node name="Explose" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_p7ppu")
+volume_db = -5.0
+max_distance = 384.0
+bus = &"sfx"
 
 [connection signal="timeout" from="ExplodeTimer" to="." method="_on_explode_timer_timeout"]

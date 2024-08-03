@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://odt57hhqfyyb"]
+[gd_scene load_steps=37 format=3 uid="uid://odt57hhqfyyb"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_g22xv"]
 [ext_resource type="Script" path="res://components/states/state_machine.gd" id="2_1eeh8"]
@@ -14,6 +14,9 @@
 [ext_resource type="PackedScene" uid="uid://bbg3rfqwxe0mh" path="res://components/height_sprite/height_sprite.tscn" id="10_0ne8n"]
 [ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="12_rrmdg"]
 [ext_resource type="Shader" path="res://enemies/flash.gdshader" id="12_v6rop"]
+[ext_resource type="AudioStream" uid="uid://bj8semvjkh8ba" path="res://assets/sounds/dash.wav" id="16_8q7k0"]
+[ext_resource type="AudioStream" uid="uid://bexliw27pm88f" path="res://assets/sounds/ow.wav" id="17_2si2l"]
+[ext_resource type="AudioStream" uid="uid://dtfpoe1k6rrwd" path="res://assets/sounds/drive.ogg" id="17_ql44l"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uth7a"]
 bounce = 0.5
@@ -65,7 +68,7 @@ scale_max = 5.0
 scale_curve = SubResource("CurveTexture_04fdc")
 color_initial_ramp = SubResource("GradientTexture1D_oyqsr")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_bjxp3"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wtpfu"]
 resource_local_to_scene = true
 shader = ExtResource("12_v6rop")
 shader_parameter/active = false
@@ -123,7 +126,17 @@ size = Vector2(8, 16)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r7br0"]
 size = Vector2(5, 10)
 
-[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision", "hurt_player", "health", "smoke_particles")]
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_l4ywq"]
+random_pitch = 1.1
+streams_count = 1
+stream_0/stream = ExtResource("16_8q7k0")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_mifao"]
+random_pitch = 1.1
+streams_count = 1
+stream_0/stream = ExtResource("17_2si2l")
+
+[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision", "hurt_player", "health", "smoke_particles", "dash_sound", "hurt_sound", "drive_sound")]
 collision_layer = 6
 collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_uth7a")
@@ -144,6 +157,9 @@ soft_hitbox_collision = NodePath("SoftHitbox/CollisionShape2D")
 hurt_player = NodePath("HeightSprite/AnimationPlayer")
 health = NodePath("Health")
 smoke_particles = NodePath("Rear3/Smoke")
+dash_sound = NodePath("Dash")
+hurt_sound = NodePath("Hurt")
+drive_sound = NodePath("Drive")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("2_umumv")
@@ -215,7 +231,7 @@ offset = Vector2(-2, 2)
 caster = NodePath("../HeightSprite")
 
 [node name="HeightSprite" parent="." instance=ExtResource("10_0ne8n")]
-material = SubResource("ShaderMaterial_bjxp3")
+material = SubResource("ShaderMaterial_wtpfu")
 texture = ExtResource("4_weppg")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="HeightSprite"]
@@ -240,7 +256,7 @@ shape = SubResource("CapsuleShape2D_aankp")
 collision_layer = 64
 collision_mask = 12
 damage = 10
-knockback_strength = 512.0
+knockback_strength = 128.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HardHitbox"]
 position = Vector2(8, 0)
@@ -256,6 +272,24 @@ knockback_strength = -16.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SoftHitbox"]
 position = Vector2(6.5, 0)
 shape = SubResource("RectangleShape2D_r7br0")
+
+[node name="Dash" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_l4ywq")
+volume_db = -10.0
+max_distance = 256.0
+bus = &"sfx"
+
+[node name="Hurt" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_mifao")
+max_distance = 256.0
+bus = &"sfx"
+
+[node name="Drive" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("17_ql44l")
+volume_db = -10.0
+autoplay = true
+max_distance = 256.0
+bus = &"sfx"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="was_hurt" from="Health" to="." method="_on_health_was_hurt"]

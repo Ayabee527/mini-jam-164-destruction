@@ -14,6 +14,7 @@ func enter(msg:={}) -> void:
 		* enemy.chase_speed * 0.5
 	)
 	dash_timer.start(cooldown)
+	enemy.dash_sound.play()
 	
 	#jump()
 	

@@ -21,12 +21,18 @@ extends RigidBody2D
 @export var health: Health
 @export var smoke_particles: GPUParticles2D
 
+@export var dash_sound: AudioStreamPlayer2D
+@export var hurt_sound: AudioStreamPlayer2D
+@export var drive_sound: AudioStreamPlayer2D
+
 var squish_time: float = 0.0
 
 func _ready() -> void:
 	MainCam.target = self
 
 func _process(delta: float) -> void:
+	drive_sound.pitch_scale = linear_velocity.length() / (move_speed * 0.5)
+	
 	squish_time += delta
 	squish_time = fposmod(squish_time, TAU)
 
@@ -59,6 +65,7 @@ func _on_hurtbox_knocked_back(knockback: Vector2) -> void:
 func _on_health_was_hurt(new_health: int, amount: int) -> void:
 	MainCam.shake(5 * amount, 10, 5)
 	hurt_player.play("hurt")
+	hurt_sound.play()
 	
 	if health.get_health_percent() <= 0.25:
 		smoke_particles.emitting = true
