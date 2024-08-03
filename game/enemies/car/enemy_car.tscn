@@ -70,7 +70,7 @@ scale_max = 5.0
 scale_curve = SubResource("CurveTexture_d7p0r")
 color_initial_ramp = SubResource("GradientTexture1D_xoohi")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_0sa26"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4nfag"]
 resource_local_to_scene = true
 shader = ExtResource("12_5mjfr")
 shader_parameter/active = false
@@ -263,7 +263,7 @@ hframes = 6
 caster = NodePath("../HeightSprite")
 
 [node name="HeightSprite" parent="." instance=ExtResource("6_lmius")]
-material = SubResource("ShaderMaterial_0sa26")
+material = SubResource("ShaderMaterial_4nfag")
 texture = ExtResource("7_nlruf")
 hframes = 6
 

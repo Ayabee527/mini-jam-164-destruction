@@ -55,6 +55,7 @@ func _on_health_was_hurt(new_health: int, amount: int) -> void:
 	#print(new_health)
 	hurt_player.play("hurt")
 	hurt_sound.play()
+	linear_velocity *= 0.5
 	
 	if health.get_health_percent() <= 0.25:
 		smoke_particles.emitting = true
