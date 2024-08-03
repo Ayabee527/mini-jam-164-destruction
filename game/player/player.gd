@@ -18,6 +18,8 @@ extends RigidBody2D
 @export var hard_hitbox_collision: CollisionShape2D
 @export var soft_hitbox_collision: CollisionShape2D
 @export var hurt_player: AnimationPlayer
+@export var health: Health
+@export var smoke_particles: GPUParticles2D
 
 var squish_time: float = 0.0
 
@@ -57,3 +59,6 @@ func _on_hurtbox_knocked_back(knockback: Vector2) -> void:
 func _on_health_was_hurt(new_health: int, amount: int) -> void:
 	MainCam.shake(5 * amount, 10, 5)
 	hurt_player.play("hurt")
+	
+	if health.get_health_percent() <= 0.25:
+		smoke_particles.emitting = true

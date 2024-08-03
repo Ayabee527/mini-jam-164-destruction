@@ -20,10 +20,14 @@ signal exploded()
 @export var coll_shape: CollisionShape2D
 @export var debri: GPUParticles2D
 @export var smoke: GPUParticles2D
+@export var damage_sprite: Sprite2D
 
 var boomed: bool = false
 
 func _ready() -> void:
+	damage_sprite.frame = randi() % damage_sprite.hframes
+	damage_sprite.scale = Vector2.ONE * ( radius / 128.0 )
+	
 	prepare()
 	if autostart:
 		start_fuse()
@@ -97,8 +101,16 @@ func explode() -> void:
 		Vector2.ZERO, fade_time
 	).from(Vector2.ONE)
 	tween.play()
-	await smoke.finished
+	
+	damage_sprite.show()
+	remove_child(damage_sprite)
+	get_tree().current_scene.add_child(damage_sprite)
+	damage_sprite.global_position = global_position
+	
+	await tween.finished
 	coll_shape.set_deferred("disabled", true)
+	
+	await smoke.finished
 	queue_free()
 
 func _on_explode_timer_timeout() -> void:

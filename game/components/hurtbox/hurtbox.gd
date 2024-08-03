@@ -29,7 +29,7 @@ func take_damage() -> void:
 	invinc_timer.start(chosen_hitbox.invinc_time)
 
 func _on_area_entered(area: Area2D) -> void:
-	if area is Hitbox and not active_hitboxes.has(area):
+	if area is Hitbox and not active_hitboxes.has(area) and not area.owner == owner:
 		area = area as Hitbox
 		active_hitboxes.append(area)
 		hurt.emit(area)

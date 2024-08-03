@@ -4,6 +4,7 @@
 
 [node name="MainCam" type="Camera2D"]
 ignore_rotation = false
+zoom = Vector2(0.75, 0.75)
 limit_smoothed = true
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0

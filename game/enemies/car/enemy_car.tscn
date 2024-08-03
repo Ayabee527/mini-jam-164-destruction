@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://bkqsn5lwyrsop"]
+[gd_scene load_steps=34 format=3 uid="uid://bkqsn5lwyrsop"]
 
 [ext_resource type="Script" path="res://enemies/car/enemy_car.gd" id="1_fpeiw"]
 [ext_resource type="Script" path="res://components/health/health.gd" id="1_lgj22"]
@@ -10,13 +10,14 @@
 [ext_resource type="Script" path="res://enemies/car/states/chase.gd" id="5_5ud6p"]
 [ext_resource type="Script" path="res://enemies/car/states/dash.gd" id="6_farhp"]
 [ext_resource type="PackedScene" uid="uid://bbg3rfqwxe0mh" path="res://components/height_sprite/height_sprite.tscn" id="6_lmius"]
+[ext_resource type="Script" path="res://enemies/car/states/dead.gd" id="7_ktwdc"]
 [ext_resource type="Texture2D" uid="uid://dc7h6somg0kbo" path="res://assets/textures/enemy_car.png" id="7_nlruf"]
 [ext_resource type="PackedScene" uid="uid://dvvktbgt1ayca" path="res://components/hurtbox/hurtbox.tscn" id="8_4la8y"]
 [ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="9_eh00a"]
 [ext_resource type="Shader" path="res://enemies/flash.gdshader" id="12_5mjfr"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_d2opd"]
-bounce = 1.0
+bounce = 0.5
 
 [sub_resource type="Curve" id="Curve_esg0n"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -37,7 +38,35 @@ scale_max = 0.2
 scale_curve = SubResource("CurveTexture_1hkmo")
 color = Color(0.592734, 0.419391, 1.92523e-07, 1)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_d3lt3"]
+[sub_resource type="Gradient" id="Gradient_r04c0"]
+offsets = PackedFloat32Array(0, 0.413174, 0.736527, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0, 0, 0, 1, 1, 0.203922, 0, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xoohi"]
+gradient = SubResource("Gradient_r04c0")
+
+[sub_resource type="Curve" id="Curve_w3yf0"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_d7p0r"]
+curve = SubResource("Curve_w3yf0")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rsaiq"]
+particle_flag_disable_z = true
+angle_min = 1.07288e-05
+angle_max = 360.0
+spread = 180.0
+initial_velocity_min = 16.0
+initial_velocity_max = 32.0
+angular_velocity_min = -180.0
+angular_velocity_max = 180.0
+gravity = Vector3(0, 0, 0)
+scale_max = 5.0
+scale_curve = SubResource("CurveTexture_d7p0r")
+color_initial_ramp = SubResource("GradientTexture1D_xoohi")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ppvyt"]
 resource_local_to_scene = true
 shader = ExtResource("12_5mjfr")
 shader_parameter/active = false
@@ -97,7 +126,7 @@ size = Vector2(5, 10)
 [sub_resource type="CircleShape2D" id="CircleShape2D_alt04"]
 radius = 128.0
 
-[node name="EnemyCar" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision", "hurt_player")]
+[node name="EnemyCar" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision", "collision", "hurtbox_collision", "hurt_player", "health", "smoke_particles")]
 collision_layer = 10
 collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_d2opd")
@@ -115,42 +144,52 @@ rear_1 = NodePath("Rear1")
 rear_2 = NodePath("Rear2")
 hard_hitbox_collision = NodePath("HardHitbox/CollisionShape2D")
 soft_hitbox_collision = NodePath("SoftHitbox/CollisionShape2D")
+collision = NodePath("CollisionShape2D")
+hurtbox_collision = NodePath("Hurtbox/CollisionShape2D")
 hurt_player = NodePath("HeightSprite/AnimationPlayer")
+health = NodePath("Health")
+smoke_particles = NodePath("Rear3/Smoke")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("1_lgj22")
-max_health = 100
+max_health = 20
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
 script = ExtResource("3_7hb5b")
 initial_state = NodePath("Hunt")
 
-[node name="Hunt" type="Node" parent="StateMachine" node_paths=PackedStringArray("turn_timer", "reverse_timer", "wall_sensors")]
+[node name="Hunt" type="Node" parent="StateMachine" node_paths=PackedStringArray("turn_timer")]
 script = ExtResource("4_g4psh")
-min_turn_cooldown = 1.0
-max_turn_cooldown = 2.0
+min_turn_cooldown = 0.25
+max_turn_cooldown = 1.0
 turn_timer = NodePath("TurnTimer")
-reverse_timer = NodePath("ReverseTimer")
-wall_sensors = NodePath("../../Raycasts")
 
 [node name="TurnTimer" type="Timer" parent="StateMachine/Hunt"]
 one_shot = true
 
-[node name="ReverseTimer" type="Timer" parent="StateMachine/Hunt"]
-one_shot = true
-
-[node name="Chase" type="Node" parent="StateMachine" node_paths=PackedStringArray("give_up_timer", "reverse_timer", "wall_sensors")]
+[node name="Chase" type="Node" parent="StateMachine" node_paths=PackedStringArray("give_up_timer", "dash_timer")]
 script = ExtResource("5_5ud6p")
 give_up_timer = NodePath("GiveUpTimer")
-reverse_timer = NodePath("../Hunt/ReverseTimer")
-wall_sensors = NodePath("../../Raycasts")
+dash_timer = NodePath("DashTimer")
 
 [node name="GiveUpTimer" type="Timer" parent="StateMachine/Chase"]
 wait_time = 5.0
 one_shot = true
 
-[node name="Dash" type="Node" parent="StateMachine"]
+[node name="DashTimer" type="Timer" parent="StateMachine/Chase"]
+wait_time = 3.0
+one_shot = true
+
+[node name="Dash" type="Node" parent="StateMachine" node_paths=PackedStringArray("dash_timer")]
 script = ExtResource("6_farhp")
+cooldown = 0.25
+dash_timer = NodePath("DashTimer")
+
+[node name="DashTimer" type="Timer" parent="StateMachine/Dash"]
+one_shot = true
+
+[node name="Dead" type="Node" parent="StateMachine"]
+script = ExtResource("7_ktwdc")
 
 [node name="Rear1" type="Marker2D" parent="."]
 position = Vector2(-4, -5)
@@ -161,6 +200,7 @@ process_material = SubResource("ParticleProcessMaterial_hx72l")
 texture = ExtResource("2_8tnti")
 lifetime = 2.0
 randomness = 1.0
+visibility_rect = Rect2(-512, -512, 1024, 1024)
 
 [node name="Trail" parent="Rear1" instance=ExtResource("3_ius2y")]
 modulate = Color(0.592734, 0.419391, 1.92523e-07, 1)
@@ -177,12 +217,21 @@ process_material = SubResource("ParticleProcessMaterial_hx72l")
 texture = ExtResource("2_8tnti")
 lifetime = 2.0
 randomness = 1.0
+visibility_rect = Rect2(-512, -512, 1024, 1024)
 
 [node name="Trail" parent="Rear2" instance=ExtResource("3_ius2y")]
 modulate = Color(0.592734, 0.419391, 1.92523e-07, 1)
 z_index = -1
 z_as_relative = false
 length = 256
+
+[node name="Rear3" type="Marker2D" parent="."]
+position = Vector2(-8, 0)
+
+[node name="Smoke" type="GPUParticles2D" parent="Rear3"]
+emitting = false
+amount = 25
+process_material = SubResource("ParticleProcessMaterial_rsaiq")
 
 [node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("4_iptr5")]
 texture = ExtResource("7_nlruf")
@@ -191,7 +240,7 @@ hframes = 6
 caster = NodePath("../HeightSprite")
 
 [node name="HeightSprite" parent="." instance=ExtResource("6_lmius")]
-material = SubResource("ShaderMaterial_d3lt3")
+material = SubResource("ShaderMaterial_ppvyt")
 texture = ExtResource("7_nlruf")
 hframes = 6
 
@@ -212,6 +261,8 @@ rotation = 1.5708
 shape = SubResource("CapsuleShape2D_nbtxi")
 
 [node name="HardHitbox" parent="." instance=ExtResource("9_eh00a")]
+collision_layer = 64
+collision_mask = 12
 damage = 10
 knockback_strength = 512.0
 
@@ -221,7 +272,10 @@ shape = SubResource("RectangleShape2D_eq223")
 disabled = true
 
 [node name="SoftHitbox" parent="." instance=ExtResource("9_eh00a")]
+collision_layer = 64
+collision_mask = 12
 invinc_time = 0.1
+knockback_strength = -8.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SoftHitbox"]
 position = Vector2(6.5, 0)
@@ -264,9 +318,13 @@ target_position = Vector2(16, 0)
 rotation = 1.5708
 target_position = Vector2(16, 0)
 
+[connection signal="has_died" from="Health" to="StateMachine/Dead" method="_on_health_has_died"]
 [connection signal="was_hurt" from="Health" to="." method="_on_health_was_hurt"]
 [connection signal="timeout" from="StateMachine/Hunt/TurnTimer" to="StateMachine/Hunt" method="_on_turn_timer_timeout"]
 [connection signal="timeout" from="StateMachine/Chase/GiveUpTimer" to="StateMachine/Chase" method="_on_give_up_timer_timeout"]
+[connection signal="timeout" from="StateMachine/Chase/DashTimer" to="StateMachine/Chase" method="_on_dash_timer_timeout"]
+[connection signal="timeout" from="StateMachine/Dash/DashTimer" to="StateMachine/Dash" method="_on_dash_timer_timeout"]
+[connection signal="knocked_back" from="Hurtbox" to="." method="_on_hurtbox_knocked_back"]
 [connection signal="body_entered" from="CarFinder" to="StateMachine/Hunt" method="_on_car_finder_body_entered"]
 [connection signal="body_entered" from="CarFinder" to="StateMachine/Chase" method="_on_car_finder_body_entered"]
 [connection signal="body_exited" from="CarFinder" to="StateMachine/Chase" method="_on_car_finder_body_exited"]

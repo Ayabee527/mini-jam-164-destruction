@@ -1,7 +1,6 @@
 class_name Health
 extends Node
 
-signal max_health_changed(new_max_health: int)
 signal health_changed(new_health: int)
 signal was_hurt(new_health: int, amount: int)
 signal was_healed(new_health: int, amount: int)

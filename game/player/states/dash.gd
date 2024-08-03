@@ -26,7 +26,7 @@ func physics_update(delta: float) -> void:
 	var move_axis: float = player.get_move_axis()
 	var move_dir: Vector2 = Vector2.from_angle(player.global_rotation)
 	player.apply_central_force(
-		move_dir * move_axis * player.move_speed * 2.0
+		move_dir * move_axis * player.move_speed * 1.25
 	)
 
 func exit() -> void:
