@@ -60,6 +60,7 @@ fuse = NodePath("Fuse")
 [node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("2_h2syy")]
 texture = ExtResource("1_g1q5m")
 offset = Vector2(0, 1)
+color = null
 caster = NodePath("../Stick")
 shadow_offset = Vector2(0, 1)
 

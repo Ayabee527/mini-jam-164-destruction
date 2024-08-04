@@ -7,8 +7,8 @@ extends Sprite2D
 @export var bounce: float = 0.0
 
 var jump_velocity : float = 0.0
-var jump_gravity : float = 0.0
-var fall_gravity : float = 0.0
+var jump_gravity : float = 98
+var fall_gravity : float = 98
 
 var speed: float = 0.0
 

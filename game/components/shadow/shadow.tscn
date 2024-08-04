@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://components/shadow/shadow.gd" id="2_gr2cp"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4k5es"]
+resource_local_to_scene = true
 shader = ExtResource("1_m1d72")
 shader_parameter/color = Color(0, 0, 0, 1)
 

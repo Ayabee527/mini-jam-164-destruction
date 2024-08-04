@@ -1,10 +1,11 @@
-[gd_scene load_steps=42 format=3 uid="uid://bkqsn5lwyrsop"]
+[gd_scene load_steps=43 format=3 uid="uid://bkqsn5lwyrsop"]
 
 [ext_resource type="Script" path="res://enemies/car/enemy_car.gd" id="1_fpeiw"]
 [ext_resource type="Script" path="res://components/health/health.gd" id="1_lgj22"]
 [ext_resource type="Texture2D" uid="uid://dxgroo4ufn7ac" path="res://assets/textures/circle.png" id="2_8tnti"]
 [ext_resource type="Script" path="res://components/states/state_machine.gd" id="3_7hb5b"]
 [ext_resource type="PackedScene" uid="uid://bw8338ilrtcwc" path="res://components/trail/trail.tscn" id="3_ius2y"]
+[ext_resource type="Script" path="res://enemies/car/states/spawn.gd" id="4_g1ixq"]
 [ext_resource type="Script" path="res://enemies/car/states/hunt.gd" id="4_g4psh"]
 [ext_resource type="PackedScene" uid="uid://ouku35n2g1oe" path="res://components/shadow/shadow.tscn" id="4_iptr5"]
 [ext_resource type="Script" path="res://enemies/car/states/chase.gd" id="5_5ud6p"]
@@ -70,7 +71,7 @@ scale_max = 5.0
 scale_curve = SubResource("CurveTexture_d7p0r")
 color_initial_ramp = SubResource("GradientTexture1D_xoohi")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_flslb"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kgta1"]
 resource_local_to_scene = true
 shader = ExtResource("12_5mjfr")
 shader_parameter/active = false
@@ -182,7 +183,14 @@ max_health = 20
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
 script = ExtResource("3_7hb5b")
-initial_state = NodePath("Hunt")
+initial_state = NodePath("Spawn")
+
+[node name="Spawn" type="Node" parent="StateMachine" node_paths=PackedStringArray("start_timer")]
+script = ExtResource("4_g1ixq")
+start_timer = NodePath("StartTimer")
+
+[node name="StartTimer" type="Timer" parent="StateMachine/Spawn"]
+one_shot = true
 
 [node name="Hunt" type="Node" parent="StateMachine" node_paths=PackedStringArray("turn_timer")]
 script = ExtResource("4_g4psh")
@@ -221,6 +229,7 @@ script = ExtResource("7_ktwdc")
 position = Vector2(-4, -5)
 
 [node name="DirtTrail" type="GPUParticles2D" parent="Rear1"]
+emitting = false
 amount = 75
 process_material = SubResource("ParticleProcessMaterial_hx72l")
 texture = ExtResource("2_8tnti")
@@ -238,6 +247,7 @@ length = 256
 position = Vector2(-4, 5)
 
 [node name="DirtTrail2" type="GPUParticles2D" parent="Rear2"]
+emitting = false
 amount = 75
 process_material = SubResource("ParticleProcessMaterial_hx72l")
 texture = ExtResource("2_8tnti")
@@ -264,9 +274,10 @@ visibility_rect = Rect2(-128, -128, 256, 256)
 texture = ExtResource("7_nlruf")
 hframes = 6
 caster = NodePath("../HeightSprite")
+max_height = 512.0
 
 [node name="HeightSprite" parent="." instance=ExtResource("6_lmius")]
-material = SubResource("ShaderMaterial_flslb")
+material = SubResource("ShaderMaterial_kgta1")
 texture = ExtResource("7_nlruf")
 hframes = 6
 
@@ -285,6 +296,7 @@ health = NodePath("../Health")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_nbtxi")
+disabled = true
 
 [node name="HardHitbox" parent="." instance=ExtResource("9_eh00a")]
 collision_layer = 64
@@ -306,6 +318,7 @@ knockback_strength = -8.0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SoftHitbox"]
 position = Vector2(6.5, 0)
 shape = SubResource("RectangleShape2D_6df35")
+disabled = true
 
 [node name="CarFinder" type="Area2D" parent="."]
 collision_layer = 8
@@ -358,6 +371,7 @@ bus = &"sfx"
 [node name="Drive" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("18_akhsm")
 volume_db = -10.0
+pitch_scale = 0.01
 autoplay = true
 max_distance = 256.0
 bus = &"sfx"
@@ -382,6 +396,7 @@ wait_time = 0.5
 [connection signal="has_died" from="Health" to="." method="_on_health_has_died"]
 [connection signal="has_died" from="Health" to="StateMachine/Dead" method="_on_health_has_died"]
 [connection signal="was_hurt" from="Health" to="." method="_on_health_was_hurt"]
+[connection signal="timeout" from="StateMachine/Spawn/StartTimer" to="StateMachine/Spawn" method="_on_start_timer_timeout"]
 [connection signal="timeout" from="StateMachine/Hunt/TurnTimer" to="StateMachine/Hunt" method="_on_turn_timer_timeout"]
 [connection signal="timeout" from="StateMachine/Chase/GiveUpTimer" to="StateMachine/Chase" method="_on_give_up_timer_timeout"]
 [connection signal="timeout" from="StateMachine/Chase/DashTimer" to="StateMachine/Chase" method="_on_dash_timer_timeout"]
