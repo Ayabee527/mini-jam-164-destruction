@@ -1,0 +1,158 @@
+[gd_scene load_steps=13 format=3 uid="uid://b2w3jefudp8sp"]
+
+[ext_resource type="Script" path="res://attacks/bullet/bullet.gd" id="1_0mpbc"]
+[ext_resource type="PackedScene" uid="uid://bbg3rfqwxe0mh" path="res://components/height_sprite/height_sprite.tscn" id="1_imlsr"]
+[ext_resource type="PackedScene" uid="uid://ouku35n2g1oe" path="res://components/shadow/shadow.tscn" id="2_8gaf6"]
+[ext_resource type="Texture2D" uid="uid://clsitdb50ul5v" path="res://assets/textures/bullet.png" id="2_wxmwc"]
+[ext_resource type="PackedScene" uid="uid://bw8338ilrtcwc" path="res://components/trail/trail.tscn" id="3_3u5fs"]
+[ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="5_vmaah"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1yr54"]
+bounce = 1.0
+
+[sub_resource type="Animation" id="Animation_h10ak"]
+resource_name = "flash_out"
+length = 1.2
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("HeightSprite:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [false, true, false, true, false, true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Shadow:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [false, true, false, true, false, true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Trail:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [false, true, false, true, false, true, false]
+}
+
+[sub_resource type="Animation" id="Animation_yymhk"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("HeightSprite:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Shadow:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Trail:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jblf6"]
+_data = {
+"RESET": SubResource("Animation_yymhk"),
+"flash_out": SubResource("Animation_h10ak")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x2f1k"]
+radius = 3.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ownbw"]
+radius = 4.0
+
+[node name="Bullet" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "anim_player", "hitbox", "hit_collision", "collision", "life_timer")]
+collision_layer = 64
+physics_material_override = SubResource("PhysicsMaterial_1yr54")
+gravity_scale = 0.0
+contact_monitor = true
+max_contacts_reported = 4
+script = ExtResource("1_0mpbc")
+sprite = NodePath("HeightSprite")
+shadow = NodePath("Shadow")
+anim_player = NodePath("AnimationPlayer")
+hitbox = NodePath("Hitbox")
+hit_collision = NodePath("Hitbox/CollisionShape2D")
+collision = NodePath("CollisionShape2D")
+life_timer = NodePath("LifeTimer")
+
+[node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("2_8gaf6")]
+texture = ExtResource("2_wxmwc")
+caster = NodePath("../HeightSprite")
+
+[node name="Trail" parent="." instance=ExtResource("3_3u5fs")]
+modulate = Color(1, 0, 0, 1)
+width = 6.0
+
+[node name="HeightSprite" parent="." instance=ExtResource("1_imlsr")]
+texture = ExtResource("2_wxmwc")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_jblf6")
+}
+
+[node name="LifeTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_x2f1k")
+disabled = true
+
+[node name="Hitbox" parent="." instance=ExtResource("5_vmaah")]
+collision_layer = 64
+collision_mask = 12
+invinc_time = 0.25
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CircleShape2D_ownbw")
+disabled = true
+
+[node name="ActivateTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="LifeTimer" to="." method="_on_life_timer_timeout"]
+[connection signal="timeout" from="ActivateTimer" to="." method="_on_activate_timer_timeout"]

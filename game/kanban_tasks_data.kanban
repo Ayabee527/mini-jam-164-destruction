@@ -22,6 +22,7 @@
 			"uuid": "8a423edc-b109-476f-ae35-a2c9f1fee598",
 			"title": "Doing",
 			"tasks": [
+				"c2fb078b-8d21-47fd-8bcb-cf8fdd223e93",
 				"4e464f06-d96c-47a7-8c0d-13ca4ebf55c5",
 				"74159dc6-9ab4-4364-8930-dd403346a76e"
 			]
@@ -143,6 +144,13 @@
 		{
 			"uuid": "fce0ee8d-778e-48d6-a2d3-a90dbc7b9d77",
 			"title": "height sprite custom gravity and bounce",
+			"description": "",
+			"category": "d4c7cf45-69ab-4c56-ac59-a0009fd90e48",
+			"steps": []
+		},
+		{
+			"uuid": "c2fb078b-8d21-47fd-8bcb-cf8fdd223e93",
+			"title": "bullets",
 			"description": "",
 			"category": "d4c7cf45-69ab-4c56-ac59-a0009fd90e48",
 			"steps": []

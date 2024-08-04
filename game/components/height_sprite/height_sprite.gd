@@ -4,7 +4,7 @@ extends Sprite2D
 
 @export var height: float = 0.0:
 	set = set_height
-@export var bounce: float = 0.5
+@export var bounce: float = 0.0
 
 var jump_velocity : float = 0.0
 var jump_gravity : float = 0.0

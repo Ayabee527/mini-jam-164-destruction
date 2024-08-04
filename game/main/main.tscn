@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://main/main.gd" id="1_pvali"]
 [ext_resource type="PackedScene" uid="uid://odt57hhqfyyb" path="res://player/player.tscn" id="1_y8kpo"]
 [ext_resource type="Texture2D" uid="uid://dsh6w54r4e3xr" path="res://assets/textures/square.png" id="2_6gsk7"]
-[ext_resource type="PackedScene" uid="uid://dbnssgxxh071g" path="res://attacks/dynamite/dynamite.tscn" id="2_831yv"]
+[ext_resource type="PackedScene" uid="uid://b2w3jefudp8sp" path="res://attacks/bullet/bullet.tscn" id="4_g2lw7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u4opk"]
 draw_center = false
@@ -85,6 +85,6 @@ disabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_y8kpo")]
 
-[node name="Dynamite" parent="." instance=ExtResource("2_831yv")]
-position = Vector2(0, -24)
-rotation = 1.5708
+[node name="Bullet" parent="." instance=ExtResource("4_g2lw7")]
+position = Vector2(0, -20)
+rotation = 0.106465
