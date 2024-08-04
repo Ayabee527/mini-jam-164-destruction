@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://bkqsn5lwyrsop"]
+[gd_scene load_steps=42 format=3 uid="uid://bkqsn5lwyrsop"]
 
 [ext_resource type="Script" path="res://enemies/car/enemy_car.gd" id="1_fpeiw"]
 [ext_resource type="Script" path="res://components/health/health.gd" id="1_lgj22"]
@@ -70,7 +70,7 @@ scale_max = 5.0
 scale_curve = SubResource("CurveTexture_d7p0r")
 color_initial_ramp = SubResource("GradientTexture1D_xoohi")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_vttv1"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flslb"]
 resource_local_to_scene = true
 shader = ExtResource("12_5mjfr")
 shader_parameter/active = false
@@ -145,7 +145,9 @@ random_pitch = 1.5
 streams_count = 1
 stream_0/stream = ExtResource("19_573nd")
 
-[node name="EnemyCar" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision", "collision", "hurtbox_collision", "hurt_player", "health", "smoke_particles", "drive_sound", "dash_sound", "hurt_sound", "die_sound")]
+[sub_resource type="CircleShape2D" id="CircleShape2D_0uxak"]
+
+[node name="EnemyCar" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision", "collision", "hurtbox_collision", "hurt_player", "health", "smoke_particles", "drive_sound", "dash_sound", "hurt_sound", "die_sound", "fortnite_timer")]
 collision_layer = 10
 collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_d2opd")
@@ -172,6 +174,7 @@ drive_sound = NodePath("Drive")
 dash_sound = NodePath("Dash")
 hurt_sound = NodePath("Hurt")
 die_sound = NodePath("Die")
+fortnite_timer = NodePath("Fortnite")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("1_lgj22")
@@ -263,7 +266,7 @@ hframes = 6
 caster = NodePath("../HeightSprite")
 
 [node name="HeightSprite" parent="." instance=ExtResource("6_lmius")]
-material = SubResource("ShaderMaterial_vttv1")
+material = SubResource("ShaderMaterial_flslb")
 texture = ExtResource("7_nlruf")
 hframes = 6
 
@@ -366,6 +369,16 @@ autoplay = true
 max_distance = 256.0
 bus = &"sfx"
 
+[node name="ArenaDetect" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 128
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ArenaDetect"]
+shape = SubResource("CircleShape2D_0uxak")
+
+[node name="Fortnite" type="Timer" parent="."]
+wait_time = 0.5
+
 [connection signal="has_died" from="Health" to="." method="_on_health_has_died"]
 [connection signal="has_died" from="Health" to="StateMachine/Dead" method="_on_health_has_died"]
 [connection signal="was_hurt" from="Health" to="." method="_on_health_was_hurt"]
@@ -377,3 +390,6 @@ bus = &"sfx"
 [connection signal="body_entered" from="CarFinder" to="StateMachine/Hunt" method="_on_car_finder_body_entered"]
 [connection signal="body_entered" from="CarFinder" to="StateMachine/Chase" method="_on_car_finder_body_entered"]
 [connection signal="body_exited" from="CarFinder" to="StateMachine/Chase" method="_on_car_finder_body_exited"]
+[connection signal="area_entered" from="ArenaDetect" to="." method="_on_arena_detect_area_entered"]
+[connection signal="area_exited" from="ArenaDetect" to="." method="_on_arena_detect_area_exited"]
+[connection signal="timeout" from="Fortnite" to="." method="_on_fortnite_timeout"]

@@ -16,7 +16,7 @@ func enter(msg:={}) -> void:
 	var explosion := EXPLOSION.instantiate()
 	explosion.fuse_time = 3.0
 	explosion.damage = 10.0
-	explosion.radius = randf_range(48, 80)
+	explosion.radius = randf_range(24, 48)
 	enemy.rear_2.add_sibling(explosion)
 	explosion.exploded.connect(explode)
 	explosion.tree_exited.connect(

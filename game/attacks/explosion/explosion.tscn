@@ -110,7 +110,7 @@ disabled = true
 [node name="Damage" type="Sprite2D" parent="."]
 visible = false
 modulate = Color(1, 1, 1, 0.501961)
-z_index = -1
+z_index = -2
 z_as_relative = false
 texture = ExtResource("4_j7bh2")
 hframes = 3

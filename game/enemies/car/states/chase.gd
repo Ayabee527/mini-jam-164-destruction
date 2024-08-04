@@ -5,7 +5,12 @@ extends EnemyCarState
 
 var target: Node2D
 
+var chase_limit: float = 256.0
+
 func enter(msg:={}) -> void:
+	if is_instance_valid(enemy.arena):
+		chase_limit = enemy.arena.radius * 0.5
+	
 	if msg.has("target"):
 		target = msg["target"]
 	else:
@@ -21,7 +26,12 @@ func physics_update(delta: float) -> void:
 		move_dir * enemy.chase_speed
 	)
 	
-	if enemy.global_position.distance_to(Vector2.ZERO) >= 192.0:
+	if "health" in target:
+		var health = target.health as Health
+		if health.health <= 0:
+			state_machine.transition_to("Hunt")
+	
+	if enemy.global_position.distance_to(Vector2.ZERO) >= chase_limit:
 		state_machine.transition_to("Hunt")
 
 func exit() -> void:
@@ -47,9 +57,32 @@ func _on_give_up_timer_timeout() -> void:
 func _on_car_finder_body_entered(body: Node2D) -> void:
 	if is_active:
 		give_up_timer.stop()
-		if body is Player and body != target:
-			if randf_range(0.0, 100.0) >= enemy.health.get_health_percent():
-				state_machine.transition_to("Chase", {"target": body})
+		
+		var health: Health = null
+		if "health" in body:
+			health = body.health as Health
+			if health.health <= 0:
+				return
+		
+		var chance: float = 0.5
+		if body is Player:
+			chance = randf_range(0.0, 100.0) / enemy.health.get_health_percent()
+			#print("Player: ", chance)
+		else:
+			chance = 0.5
+		
+		if is_instance_valid(health):
+			chance += 1.0 - ( health.get_health_percent() / 100.0 )
+			#print("Health: ", chance)
+		
+		if body != target:
+			chance -= 0.25
+		
+		#print("Total Chance: ", chance)
+		#print("\n")
+		
+		if randf() <= chance:
+			state_machine.transition_to("Chase", {"target": body})
 
 
 func _on_dash_timer_timeout() -> void:

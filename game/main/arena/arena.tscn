@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://drey7mcvji3my"]
+
+[ext_resource type="Script" path="res://main/arena/arena.gd" id="1_bt23g"]
+
+[node name="Arena" type="Area2D" node_paths=PackedStringArray("border", "collision")]
+collision_layer = 128
+collision_mask = 12
+script = ExtResource("1_bt23g")
+undu_amplitude = 8.0
+border = NodePath("Border")
+collision = NodePath("CollisionShape2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+
+[node name="Border" type="Line2D" parent="."]
+z_index = -1
+width = 8.0
+default_color = Color(1, 0, 0, 1)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2

@@ -1,28 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://b6ahsribm845m"]
+[gd_scene load_steps=5 format=3 uid="uid://b6ahsribm845m"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_pvali"]
 [ext_resource type="PackedScene" uid="uid://odt57hhqfyyb" path="res://player/player.tscn" id="1_y8kpo"]
 [ext_resource type="Texture2D" uid="uid://dsh6w54r4e3xr" path="res://assets/textures/square.png" id="2_6gsk7"]
-[ext_resource type="PackedScene" uid="uid://b2w3jefudp8sp" path="res://attacks/bullet/bullet.tscn" id="4_g2lw7"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u4opk"]
-draw_center = false
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(1, 1, 1, 1)
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_16ak2"]
-normal = Vector2(1, 0)
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_hocv1"]
-normal = Vector2(-1, 0)
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_e48l0"]
-normal = Vector2(0, 1)
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_6xlnr"]
+[ext_resource type="PackedScene" uid="uid://drey7mcvji3my" path="res://main/arena/arena.tscn" id="3_ppbj0"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_pvali")
@@ -34,57 +15,7 @@ z_as_relative = false
 scale = Vector2(160, 160)
 texture = ExtResource("2_6gsk7")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
-custom_minimum_size = Vector2(1024, 1024)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -256.0
-offset_top = -256.0
-offset_right = 256.0
-offset_bottom = 256.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_u4opk")
-
-[node name="Walls" type="Node2D" parent="."]
-
-[node name="WallLeft" type="StaticBody2D" parent="Walls"]
-position = Vector2(-512, 0)
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallLeft"]
-shape = SubResource("WorldBoundaryShape2D_16ak2")
-disabled = true
-
-[node name="WallRight" type="StaticBody2D" parent="Walls"]
-position = Vector2(512, 0)
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallRight"]
-shape = SubResource("WorldBoundaryShape2D_hocv1")
-disabled = true
-
-[node name="WallUp" type="StaticBody2D" parent="Walls"]
-position = Vector2(0, -512)
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallUp"]
-shape = SubResource("WorldBoundaryShape2D_e48l0")
-disabled = true
-
-[node name="WallDown" type="StaticBody2D" parent="Walls"]
-position = Vector2(0, 512)
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/WallDown"]
-shape = SubResource("WorldBoundaryShape2D_6xlnr")
-disabled = true
+[node name="Arena" parent="." instance=ExtResource("3_ppbj0")]
+radius = 512.0
 
 [node name="Player" parent="." instance=ExtResource("1_y8kpo")]
-
-[node name="Bullet" parent="." instance=ExtResource("4_g2lw7")]
-position = Vector2(0, -20)
-rotation = 0.106465

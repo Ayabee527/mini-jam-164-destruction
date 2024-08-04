@@ -11,6 +11,7 @@
 			"uuid": "829b672c-e0f6-491c-98f2-3138a3cc1f3a",
 			"title": "Todo",
 			"tasks": [
+				"87f4fb72-551d-42ec-8f7c-d3e3b0e21839",
 				"95182e66-f669-4dcd-a31a-792a4c999da7",
 				"12b99905-cfc1-4151-bb03-0b55b05b5368",
 				"3b77bb05-6773-460b-8fb3-5f3ceb288aa0",
@@ -22,15 +23,15 @@
 			"uuid": "8a423edc-b109-476f-ae35-a2c9f1fee598",
 			"title": "Doing",
 			"tasks": [
-				"c2fb078b-8d21-47fd-8bcb-cf8fdd223e93",
-				"4e464f06-d96c-47a7-8c0d-13ca4ebf55c5",
-				"74159dc6-9ab4-4364-8930-dd403346a76e"
+				"4e464f06-d96c-47a7-8c0d-13ca4ebf55c5"
 			]
 		},
 		{
 			"uuid": "763de840-6530-401d-9f9d-70727f0bea08",
 			"title": "Done",
 			"tasks": [
+				"74159dc6-9ab4-4364-8930-dd403346a76e",
+				"c2fb078b-8d21-47fd-8bcb-cf8fdd223e93",
 				"1978c167-4d1e-4d20-b219-276310921738",
 				"fce0ee8d-778e-48d6-a2d3-a90dbc7b9d77",
 				"a10c4e6d-21ac-4b45-907a-8866e0cd1fe0",
@@ -66,7 +67,7 @@
 		},
 		{
 			"uuid": "4e464f06-d96c-47a7-8c0d-13ca4ebf55c5",
-			"title": "car powerups",
+			"title": "car weapons and color typing",
 			"description": "",
 			"category": "d4c7cf45-69ab-4c56-ac59-a0009fd90e48",
 			"steps": []
@@ -151,6 +152,13 @@
 		{
 			"uuid": "c2fb078b-8d21-47fd-8bcb-cf8fdd223e93",
 			"title": "bullets",
+			"description": "",
+			"category": "d4c7cf45-69ab-4c56-ac59-a0009fd90e48",
+			"steps": []
+		},
+		{
+			"uuid": "87f4fb72-551d-42ec-8f7c-d3e3b0e21839",
+			"title": "enemy waves",
 			"description": "",
 			"category": "d4c7cf45-69ab-4c56-ac59-a0009fd90e48",
 			"steps": []

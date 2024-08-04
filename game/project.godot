@@ -90,6 +90,7 @@ restart={
 2d_physics/layer_5="player_attacks"
 2d_physics/layer_6="enemy_attacks"
 2d_physics/layer_7="global_attacks"
+2d_physics/layer_8="arena"
 
 [rendering]
 

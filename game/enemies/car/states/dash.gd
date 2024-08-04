@@ -44,4 +44,4 @@ func _on_dash_timer_timeout() -> void:
 	if not is_active:
 		return
 	
-	state_machine.transition_to("Hunt")
+	state_machine.transition_to("Chase", {"target": target})

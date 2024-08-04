@@ -27,7 +27,11 @@ extends RigidBody2D
 @export var hurt_sound: AudioStreamPlayer2D
 @export var die_sound: AudioStreamPlayer2D
 
+@export var fortnite_timer: Timer
+
 var squish_time: float = 0.0
+
+var arena: Arena
 
 func _ready() -> void:
 	global_rotation = randf() * TAU
@@ -69,3 +73,16 @@ func _on_hurtbox_knocked_back(knockback: Vector2) -> void:
 
 func _on_health_has_died() -> void:
 	die_sound.play()
+
+
+func _on_arena_detect_area_entered(area: Area2D) -> void:
+	arena = area as Arena
+	fortnite_timer.stop()
+
+
+func _on_arena_detect_area_exited(area: Area2D) -> void:
+	fortnite_timer.start()
+
+
+func _on_fortnite_timeout() -> void:
+	health.hurt(1)

@@ -25,6 +25,8 @@ extends RigidBody2D
 @export var hurt_sound: AudioStreamPlayer2D
 @export var drive_sound: AudioStreamPlayer2D
 
+@export var fortnite_timer: Timer
+
 var squish_time: float = 0.0
 
 func _ready() -> void:
@@ -70,3 +72,15 @@ func _on_health_was_hurt(new_health: int, amount: int) -> void:
 	
 	if health.get_health_percent() <= 25.0:
 		smoke_particles.emitting = true
+
+
+func _on_arena_detect_area_entered(area: Area2D) -> void:
+	fortnite_timer.stop()
+
+
+func _on_arena_detect_area_exited(area: Area2D) -> void:
+	fortnite_timer.start()
+
+
+func _on_fortnite_timeout() -> void:
+	health.hurt(1)
