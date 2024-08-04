@@ -1,14 +1,20 @@
-[gd_scene load_steps=13 format=3 uid="uid://b2w3jefudp8sp"]
+[gd_scene load_steps=15 format=3 uid="uid://b2w3jefudp8sp"]
 
 [ext_resource type="Script" path="res://attacks/bullet/bullet.gd" id="1_0mpbc"]
 [ext_resource type="PackedScene" uid="uid://bbg3rfqwxe0mh" path="res://components/height_sprite/height_sprite.tscn" id="1_imlsr"]
 [ext_resource type="PackedScene" uid="uid://ouku35n2g1oe" path="res://components/shadow/shadow.tscn" id="2_8gaf6"]
 [ext_resource type="Texture2D" uid="uid://clsitdb50ul5v" path="res://assets/textures/bullet.png" id="2_wxmwc"]
 [ext_resource type="PackedScene" uid="uid://bw8338ilrtcwc" path="res://components/trail/trail.tscn" id="3_3u5fs"]
+[ext_resource type="Shader" path="res://player/shadow.gdshader" id="3_cruov"]
 [ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="5_vmaah"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1yr54"]
 bounce = 1.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6saqn"]
+resource_local_to_scene = true
+shader = ExtResource("3_cruov")
+shader_parameter/color = Color(0, 0, 0, 1)
 
 [sub_resource type="Animation" id="Animation_h10ak"]
 resource_name = "flash_out"
@@ -118,8 +124,8 @@ collision = NodePath("CollisionShape2D")
 life_timer = NodePath("LifeTimer")
 
 [node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("2_8gaf6")]
+material = SubResource("ShaderMaterial_6saqn")
 texture = ExtResource("2_wxmwc")
-color = null
 caster = NodePath("../HeightSprite")
 
 [node name="Trail" parent="." instance=ExtResource("3_3u5fs")]

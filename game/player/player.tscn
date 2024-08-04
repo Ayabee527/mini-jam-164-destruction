@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://odt57hhqfyyb"]
+[gd_scene load_steps=42 format=3 uid="uid://odt57hhqfyyb"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_g22xv"]
 [ext_resource type="Script" path="res://components/states/state_machine.gd" id="2_1eeh8"]
@@ -12,11 +12,14 @@
 [ext_resource type="PackedScene" uid="uid://dvvktbgt1ayca" path="res://components/hurtbox/hurtbox.tscn" id="8_jofnb"]
 [ext_resource type="PackedScene" uid="uid://bw8338ilrtcwc" path="res://components/trail/trail.tscn" id="8_rx3g0"]
 [ext_resource type="PackedScene" uid="uid://bbg3rfqwxe0mh" path="res://components/height_sprite/height_sprite.tscn" id="10_0ne8n"]
+[ext_resource type="Shader" path="res://player/shadow.gdshader" id="10_l2sa8"]
 [ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="12_rrmdg"]
 [ext_resource type="Shader" path="res://enemies/flash.gdshader" id="12_v6rop"]
 [ext_resource type="AudioStream" uid="uid://bj8semvjkh8ba" path="res://assets/sounds/dash.wav" id="16_8q7k0"]
 [ext_resource type="AudioStream" uid="uid://bexliw27pm88f" path="res://assets/sounds/ow.wav" id="17_2si2l"]
 [ext_resource type="AudioStream" uid="uid://dtfpoe1k6rrwd" path="res://assets/sounds/drive.ogg" id="17_ql44l"]
+[ext_resource type="FontFile" uid="uid://blw0buph8plit" path="res://assets/fonts/GravityBold8.ttf" id="19_6oia6"]
+[ext_resource type="Script" path="res://player/pause.gd" id="20_5o132"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_uth7a"]
 bounce = 0.5
@@ -68,7 +71,12 @@ scale_max = 5.0
 scale_curve = SubResource("CurveTexture_04fdc")
 color_initial_ramp = SubResource("GradientTexture1D_oyqsr")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5andr"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_em1sk"]
+resource_local_to_scene = true
+shader = ExtResource("10_l2sa8")
+shader_parameter/color = Color(0, 0, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0ffe8"]
 resource_local_to_scene = true
 shader = ExtResource("12_v6rop")
 shader_parameter/active = false
@@ -229,11 +237,12 @@ amount = 25
 process_material = SubResource("ParticleProcessMaterial_mqtp0")
 
 [node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("7_p3ssd")]
+material = SubResource("ShaderMaterial_em1sk")
 texture = ExtResource("4_weppg")
 caster = NodePath("../HeightSprite")
 
 [node name="HeightSprite" parent="." instance=ExtResource("10_0ne8n")]
-material = SubResource("ShaderMaterial_5andr")
+material = SubResource("ShaderMaterial_0ffe8")
 texture = ExtResource("4_weppg")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="HeightSprite"]
@@ -303,6 +312,37 @@ shape = SubResource("CircleShape2D_fwqlu")
 
 [node name="Fortnite" type="Timer" parent="."]
 wait_time = 0.5
+
+[node name="pause" type="RichTextLabel" parent="."]
+process_mode = 3
+z_index = 10
+z_as_relative = false
+clip_contents = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -21.0
+offset_top = -24.0
+offset_right = 21.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(42, 8)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_outline_size = 2
+theme_override_fonts/normal_font = ExtResource("19_6oia6")
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+text = "[center][wave freq=20 amp=24]paused!"
+fit_content = true
+autowrap_mode = 0
+script = ExtResource("20_5o132")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="was_hurt" from="Health" to="." method="_on_health_was_hurt"]

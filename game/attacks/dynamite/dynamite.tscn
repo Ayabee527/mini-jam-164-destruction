@@ -1,14 +1,20 @@
-[gd_scene load_steps=14 format=3 uid="uid://dbnssgxxh071g"]
+[gd_scene load_steps=16 format=3 uid="uid://dbnssgxxh071g"]
 
 [ext_resource type="Texture2D" uid="uid://ip50w2ytqio3" path="res://assets/textures/dynamite.png" id="1_g1q5m"]
 [ext_resource type="Script" path="res://attacks/dynamite/dynamite.gd" id="1_xwsa3"]
 [ext_resource type="PackedScene" uid="uid://bw8338ilrtcwc" path="res://components/trail/trail.tscn" id="2_babgl"]
 [ext_resource type="PackedScene" uid="uid://ouku35n2g1oe" path="res://components/shadow/shadow.tscn" id="2_h2syy"]
+[ext_resource type="Shader" path="res://player/shadow.gdshader" id="3_shtwh"]
 [ext_resource type="PackedScene" uid="uid://duubih8cq0i7o" path="res://attacks/explosion/explosion.tscn" id="4_7adaa"]
 [ext_resource type="PackedScene" uid="uid://bbg3rfqwxe0mh" path="res://components/height_sprite/height_sprite.tscn" id="4_utdah"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ilwns"]
 bounce = 0.9
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e1p4u"]
+resource_local_to_scene = true
+shader = ExtResource("3_shtwh")
+shader_parameter/color = Color(0, 0, 0, 1)
 
 [sub_resource type="Gradient" id="Gradient_a2yfn"]
 
@@ -58,9 +64,9 @@ explosion = NodePath("Explosion")
 fuse = NodePath("Fuse")
 
 [node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("2_h2syy")]
+material = SubResource("ShaderMaterial_e1p4u")
 texture = ExtResource("1_g1q5m")
 offset = Vector2(0, 1)
-color = null
 caster = NodePath("../Stick")
 shadow_offset = Vector2(0, 1)
 
