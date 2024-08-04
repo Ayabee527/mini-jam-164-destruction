@@ -29,6 +29,12 @@ extends RigidBody2D
 
 @export var fortnite_timer: Timer
 
+@export var dyna_turn: DynaTurnWeapon
+@export var bullet_turn: BulletTurnWeapon
+@export var bullet_hit: HitBulletWeapon
+@export var dyna_spam: DynaSpamWeapon
+@export var bullet_spam: BulletSpamWeapon
+
 var squish_time: float = 0.0
 
 var arena: Arena
@@ -37,8 +43,17 @@ func _ready() -> void:
 	global_rotation = randf() * TAU
 	
 	var sprite_index: int = randi() % sprite.hframes
+	#sprite_index = 5
 	sprite.frame = sprite_index
 	shadow.frame = sprite_index
+	
+	match sprite.frame:
+		1:
+			dyna_turn.active = true
+		2:
+			bullet_turn.active = true
+		3:
+			bullet_hit.active = true
 
 func _process(delta: float) -> void:
 	drive_sound.pitch_scale = max( 0.1, linear_velocity.length() / (hunt_speed * 0.5) )
@@ -52,8 +67,9 @@ func _process(delta: float) -> void:
 	)
 	shadow.shadow_scale = sprite.scale
 	
-	squish_time += delta
-	squish_time = fposmod(squish_time, TAU)
+	if sprite.height <= 0.0:
+		squish_time += delta
+		squish_time = fposmod(squish_time, TAU)
 
 func _on_health_was_hurt(new_health: int, amount: int) -> void:
 	#print(new_health)

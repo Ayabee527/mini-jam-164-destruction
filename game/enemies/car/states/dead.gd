@@ -8,6 +8,9 @@ func enter(msg:={}) -> void:
 	if msg.has("target"):
 		target = msg["target"]
 	
+	enemy.dyna_spam.active = false
+	enemy.bullet_spam.active = false
+	
 	enemy.apply_central_impulse(
 		Vector2.from_angle(enemy.global_rotation)
 		* enemy.chase_speed * 0.5

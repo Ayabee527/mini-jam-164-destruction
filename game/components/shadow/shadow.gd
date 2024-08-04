@@ -1,4 +1,3 @@
-@tool
 class_name Shadow
 extends Sprite2D
 

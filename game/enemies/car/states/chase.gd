@@ -39,7 +39,10 @@ func exit() -> void:
 	dash_timer.stop()
 
 func look_at_target() -> void:
-	var dir_to = enemy.global_position.direction_to(target.global_position)
+	var target_pos = target.global_position
+	if "linear_velocity" in target:
+		target_pos += target.linear_velocity
+	var dir_to = enemy.global_position.direction_to(target_pos)
 	var steer_angle = Vector2.from_angle(enemy.global_rotation).angle_to(dir_to)
 	enemy.apply_torque(
 		enemy.turn_speed * sign(steer_angle)

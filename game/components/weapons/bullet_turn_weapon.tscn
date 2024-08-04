@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://bruf7aqh8on5"]
+
+[ext_resource type="Script" path="res://components/weapons/bullet_turn_weapon.gd" id="1_5ldil"]
+
+[node name="BulletTurnWeapon" type="Node2D" node_paths=PackedStringArray("shoot_timer")]
+rotation = 3.14159
+script = ExtResource("1_5ldil")
+shoot_timer = NodePath("ShootTimer")
+
+[node name="ShootTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[connection signal="timeout" from="ShootTimer" to="." method="_on_shoot_timer_timeout"]

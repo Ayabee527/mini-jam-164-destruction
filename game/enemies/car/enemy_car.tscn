@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://bkqsn5lwyrsop"]
+[gd_scene load_steps=50 format=3 uid="uid://bkqsn5lwyrsop"]
 
 [ext_resource type="Script" path="res://enemies/car/enemy_car.gd" id="1_fpeiw"]
 [ext_resource type="Script" path="res://components/health/health.gd" id="1_lgj22"]
@@ -16,10 +16,16 @@
 [ext_resource type="PackedScene" uid="uid://dvvktbgt1ayca" path="res://components/hurtbox/hurtbox.tscn" id="8_4la8y"]
 [ext_resource type="PackedScene" uid="uid://bd83v7x2q3o7f" path="res://components/hitbox/hitbox.tscn" id="9_eh00a"]
 [ext_resource type="Shader" path="res://enemies/flash.gdshader" id="12_5mjfr"]
+[ext_resource type="Shader" path="res://player/shadow.gdshader" id="12_amy43"]
 [ext_resource type="AudioStream" uid="uid://kanxo2r34r44" path="res://assets/sounds/baddash.wav" id="17_wgsew"]
 [ext_resource type="AudioStream" uid="uid://dtfpoe1k6rrwd" path="res://assets/sounds/drive.ogg" id="18_akhsm"]
 [ext_resource type="AudioStream" uid="uid://g8p40mlfymnj" path="res://assets/sounds/badow.wav" id="18_mljar"]
 [ext_resource type="AudioStream" uid="uid://cqanspeejfund" path="res://assets/sounds/baddie.wav" id="19_573nd"]
+[ext_resource type="PackedScene" uid="uid://demfojgj1mxdb" path="res://components/weapons/dyna_turn_weapon.tscn" id="22_mmdmo"]
+[ext_resource type="PackedScene" uid="uid://bruf7aqh8on5" path="res://components/weapons/bullet_turn_weapon.tscn" id="23_gjdqh"]
+[ext_resource type="PackedScene" uid="uid://8cncbayk5yqk" path="res://components/weapons/hit_bullet_weapon.tscn" id="24_5xxqo"]
+[ext_resource type="PackedScene" uid="uid://d1nvq2qmpyeo5" path="res://components/weapons/dyna_spam_weapon.tscn" id="25_naokf"]
+[ext_resource type="PackedScene" uid="uid://cyq0ka0s1k672" path="res://components/weapons/bullet_spam_weapon.tscn" id="26_atya4"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_d2opd"]
 bounce = 0.5
@@ -71,7 +77,12 @@ scale_max = 5.0
 scale_curve = SubResource("CurveTexture_d7p0r")
 color_initial_ramp = SubResource("GradientTexture1D_xoohi")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_kgta1"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ic2gd"]
+resource_local_to_scene = true
+shader = ExtResource("12_amy43")
+shader_parameter/color = Color(0, 0, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_prntb"]
 resource_local_to_scene = true
 shader = ExtResource("12_5mjfr")
 shader_parameter/active = false
@@ -148,7 +159,7 @@ stream_0/stream = ExtResource("19_573nd")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0uxak"]
 
-[node name="EnemyCar" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision", "collision", "hurtbox_collision", "hurt_player", "health", "smoke_particles", "drive_sound", "dash_sound", "hurt_sound", "die_sound", "fortnite_timer")]
+[node name="EnemyCar" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision", "collision", "hurtbox_collision", "hurt_player", "health", "smoke_particles", "drive_sound", "dash_sound", "hurt_sound", "die_sound", "fortnite_timer", "dyna_turn", "bullet_turn", "bullet_hit", "dyna_spam", "bullet_spam")]
 collision_layer = 10
 collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_d2opd")
@@ -176,6 +187,11 @@ dash_sound = NodePath("Dash")
 hurt_sound = NodePath("Hurt")
 die_sound = NodePath("Die")
 fortnite_timer = NodePath("Fortnite")
+dyna_turn = NodePath("DynaTurnWeapon")
+bullet_turn = NodePath("BulletTurnWeapon")
+bullet_hit = NodePath("HitBulletWeapon")
+dyna_spam = NodePath("DynaSpamWeapon")
+bullet_spam = NodePath("BulletSpamWeapon")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("1_lgj22")
@@ -271,13 +287,14 @@ process_material = SubResource("ParticleProcessMaterial_rsaiq")
 visibility_rect = Rect2(-128, -128, 256, 256)
 
 [node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("4_iptr5")]
+material = SubResource("ShaderMaterial_ic2gd")
 texture = ExtResource("7_nlruf")
 hframes = 6
 caster = NodePath("../HeightSprite")
 max_height = 512.0
 
 [node name="HeightSprite" parent="." instance=ExtResource("6_lmius")]
-material = SubResource("ShaderMaterial_kgta1")
+material = SubResource("ShaderMaterial_prntb")
 texture = ExtResource("7_nlruf")
 hframes = 6
 
@@ -392,6 +409,19 @@ shape = SubResource("CircleShape2D_0uxak")
 
 [node name="Fortnite" type="Timer" parent="."]
 wait_time = 0.5
+
+[node name="DynaTurnWeapon" parent="." node_paths=PackedStringArray("car") instance=ExtResource("22_mmdmo")]
+car = NodePath("..")
+
+[node name="BulletTurnWeapon" parent="." node_paths=PackedStringArray("car") instance=ExtResource("23_gjdqh")]
+car = NodePath("..")
+
+[node name="HitBulletWeapon" parent="." node_paths=PackedStringArray("health") instance=ExtResource("24_5xxqo")]
+health = NodePath("../Health")
+
+[node name="DynaSpamWeapon" parent="." instance=ExtResource("25_naokf")]
+
+[node name="BulletSpamWeapon" parent="." instance=ExtResource("26_atya4")]
 
 [connection signal="has_died" from="Health" to="." method="_on_health_has_died"]
 [connection signal="has_died" from="Health" to="StateMachine/Dead" method="_on_health_has_died"]

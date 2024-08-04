@@ -26,4 +26,9 @@ func _on_start_timer_timeout() -> void:
 	enemy.soft_hitbox_collision.set_deferred("disabled", false)
 	enemy.hurtbox_collision.set_deferred("disabled", false)
 	
+	if enemy.sprite.frame == 4:
+		enemy.dyna_spam.active = true
+	if enemy.sprite.frame == 5:
+		enemy.bullet_spam.active = true
+	
 	state_machine.transition_to("Hunt")

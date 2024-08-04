@@ -24,8 +24,11 @@ signal exploded()
 @export var explode_sound: AudioStreamPlayer2D
 
 var boomed: bool = false
+var player: Player
 
 func _ready() -> void:
+	player = get_tree().get_first_node_in_group("player")
+	
 	damage_sprite.frame = randi() % damage_sprite.hframes
 	damage_sprite.scale = Vector2.ONE * ( radius / 128.0 )
 	
@@ -79,7 +82,8 @@ func explode() -> void:
 		return
 	
 	explode_sound.play()
-	MainCam.shake(50, 10, 5)
+	var dist_ratio = radius / global_position.distance_to(player.global_position) + 0.1
+	MainCam.shake(30 * dist_ratio, 10, 5)
 	boomed = true
 	explode_timer.stop()
 	coll_shape.set_deferred("disabled", false)

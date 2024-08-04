@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://cyq0ka0s1k672"]
+
+[ext_resource type="Script" path="res://components/weapons/bullet_spam_weapon.gd" id="1_11e8u"]
+
+[node name="BulletSpamWeapon" type="Node2D" node_paths=PackedStringArray("spam_timer")]
+script = ExtResource("1_11e8u")
+spam_timer = NodePath("ShootTimer")
+
+[node name="ShootTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[connection signal="timeout" from="ShootTimer" to="." method="_on_shoot_timer_timeout"]
