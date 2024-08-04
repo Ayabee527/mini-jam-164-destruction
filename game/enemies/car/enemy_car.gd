@@ -37,7 +37,7 @@ func _ready() -> void:
 	shadow.frame = sprite_index
 
 func _process(delta: float) -> void:
-	drive_sound.pitch_scale = linear_velocity.length() / (hunt_speed * 0.5)
+	drive_sound.pitch_scale = max( 0.1, linear_velocity.length() / (hunt_speed * 0.5) )
 	
 	var w_squish: float = ( sin(squish_freq * squish_time) / 10.0 ) + 1.0
 	var h_squish: float = ( sin((squish_freq * squish_time) - PI) / 10.0 ) + 1.0
@@ -57,7 +57,7 @@ func _on_health_was_hurt(new_health: int, amount: int) -> void:
 	hurt_sound.play()
 	linear_velocity *= 0.5
 	
-	if health.get_health_percent() <= 0.25:
+	if health.get_health_percent() <= 25.0:
 		smoke_particles.emitting = true
 
 

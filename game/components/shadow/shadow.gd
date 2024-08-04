@@ -12,9 +12,10 @@ var height_scale: float = 1.0
 func _process(delta: float) -> void:
 	offset = shadow_offset.rotated(-global_rotation)
 	
-	height_scale = max(
-		0, (1 - (caster.height / max_height))
-	)
+	if is_instance_valid(caster):
+		height_scale = max(
+			0, (1 - (caster.height / max_height))
+		)
 	
 	scale = shadow_scale * height_scale
 

@@ -31,7 +31,7 @@ func _ready() -> void:
 	MainCam.target = self
 
 func _process(delta: float) -> void:
-	drive_sound.pitch_scale = linear_velocity.length() / (move_speed * 0.5)
+	drive_sound.pitch_scale = max( 0.1, linear_velocity.length() / (move_speed * 0.5) )
 	
 	squish_time += delta
 	squish_time = fposmod(squish_time, TAU)
@@ -68,5 +68,5 @@ func _on_health_was_hurt(new_health: int, amount: int) -> void:
 	hurt_sound.play()
 	linear_velocity *= 0.5
 	
-	if health.get_health_percent() <= 0.25:
+	if health.get_health_percent() <= 25.0:
 		smoke_particles.emitting = true

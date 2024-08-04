@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://main/main.gd" id="1_pvali"]
 [ext_resource type="PackedScene" uid="uid://odt57hhqfyyb" path="res://player/player.tscn" id="1_y8kpo"]
 [ext_resource type="Texture2D" uid="uid://dsh6w54r4e3xr" path="res://assets/textures/square.png" id="2_6gsk7"]
-[ext_resource type="PackedScene" uid="uid://duubih8cq0i7o" path="res://attacks/explosion/explosion.tscn" id="4_dfpjp"]
+[ext_resource type="PackedScene" uid="uid://dbnssgxxh071g" path="res://attacks/dynamite/dynamite.tscn" id="2_831yv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u4opk"]
 draw_center = false
@@ -84,7 +84,7 @@ shape = SubResource("WorldBoundaryShape2D_6xlnr")
 disabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_y8kpo")]
-position = Vector2(128, 128)
 
-[node name="Explosion" parent="." instance=ExtResource("4_dfpjp")]
-fuse_time = 3.0
+[node name="Dynamite" parent="." instance=ExtResource("2_831yv")]
+position = Vector2(0, -24)
+rotation = 1.5708

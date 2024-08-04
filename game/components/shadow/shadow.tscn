@@ -9,4 +9,5 @@ shader_parameter/color = Color(0, 0, 0, 1)
 
 [node name="Shadow" type="Sprite2D"]
 material = SubResource("ShaderMaterial_4k5es")
+offset = Vector2(-2, 2)
 script = ExtResource("2_gr2cp")

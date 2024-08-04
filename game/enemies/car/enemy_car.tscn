@@ -70,11 +70,26 @@ scale_max = 5.0
 scale_curve = SubResource("CurveTexture_d7p0r")
 color_initial_ramp = SubResource("GradientTexture1D_xoohi")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4nfag"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vttv1"]
 resource_local_to_scene = true
 shader = ExtResource("12_5mjfr")
 shader_parameter/active = false
 shader_parameter/tint = Color(1, 0, 0, 1)
+
+[sub_resource type="Animation" id="Animation_uhnof"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material:shader_parameter/active")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_g1b52"]
 resource_name = "hurt"
@@ -90,21 +105,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [true, false]
-}
-
-[sub_resource type="Animation" id="Animation_uhnof"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:material:shader_parameter/active")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_kpmgu"]
@@ -223,7 +223,7 @@ process_material = SubResource("ParticleProcessMaterial_hx72l")
 texture = ExtResource("2_8tnti")
 lifetime = 2.0
 randomness = 1.0
-visibility_rect = Rect2(-512, -512, 1024, 1024)
+visibility_rect = Rect2(-128, -128, 256, 256)
 
 [node name="Trail" parent="Rear1" instance=ExtResource("3_ius2y")]
 modulate = Color(0.592734, 0.419391, 1.92523e-07, 1)
@@ -240,7 +240,7 @@ process_material = SubResource("ParticleProcessMaterial_hx72l")
 texture = ExtResource("2_8tnti")
 lifetime = 2.0
 randomness = 1.0
-visibility_rect = Rect2(-512, -512, 1024, 1024)
+visibility_rect = Rect2(-128, -128, 256, 256)
 
 [node name="Trail" parent="Rear2" instance=ExtResource("3_ius2y")]
 modulate = Color(0.592734, 0.419391, 1.92523e-07, 1)
@@ -255,17 +255,18 @@ position = Vector2(-8, 0)
 emitting = false
 amount = 25
 process_material = SubResource("ParticleProcessMaterial_rsaiq")
+visibility_rect = Rect2(-128, -128, 256, 256)
 
 [node name="Shadow" parent="." node_paths=PackedStringArray("caster") instance=ExtResource("4_iptr5")]
 texture = ExtResource("7_nlruf")
-offset = Vector2(-2, 2)
 hframes = 6
 caster = NodePath("../HeightSprite")
 
 [node name="HeightSprite" parent="." instance=ExtResource("6_lmius")]
-material = SubResource("ShaderMaterial_4nfag")
+material = SubResource("ShaderMaterial_vttv1")
 texture = ExtResource("7_nlruf")
 hframes = 6
+bounce = 0.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="HeightSprite"]
 libraries = {

@@ -68,4 +68,4 @@ func explode() -> void:
 
 func _on_health_has_died() -> void:
 	if not is_active:
-		state_machine.transition_to("Dead")
+		state_machine.transition_to("Dead", {"target": get_tree().get_first_node_in_group("player")})

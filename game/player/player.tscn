@@ -68,7 +68,7 @@ scale_max = 5.0
 scale_curve = SubResource("CurveTexture_04fdc")
 color_initial_ramp = SubResource("GradientTexture1D_oyqsr")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_pa6ki"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_t8idn"]
 resource_local_to_scene = true
 shader = ExtResource("12_v6rop")
 shader_parameter/active = false
@@ -136,7 +136,7 @@ random_pitch = 1.1
 streams_count = 1
 stream_0/stream = ExtResource("17_2si2l")
 
-[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision", "hurt_player", "health", "smoke_particles", "dash_sound", "hurt_sound", "drive_sound")]
+[node name="Player" type="RigidBody2D" node_paths=PackedStringArray("sprite", "shadow", "dirt_trail_1", "dirt_trail_2", "rear_1", "rear_2", "hard_hitbox_collision", "soft_hitbox_collision", "hurt_player", "health", "smoke_particles", "dash_sound", "hurt_sound", "drive_sound") groups=["player"]]
 collision_layer = 6
 collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_uth7a")
@@ -231,8 +231,9 @@ offset = Vector2(-2, 2)
 caster = NodePath("../HeightSprite")
 
 [node name="HeightSprite" parent="." instance=ExtResource("10_0ne8n")]
-material = SubResource("ShaderMaterial_pa6ki")
+material = SubResource("ShaderMaterial_t8idn")
 texture = ExtResource("4_weppg")
+bounce = 0.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="HeightSprite"]
 libraries = {
@@ -287,6 +288,7 @@ bus = &"sfx"
 [node name="Drive" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("17_ql44l")
 volume_db = -10.0
+pitch_scale = 0.01
 autoplay = true
 max_distance = 256.0
 bus = &"sfx"
